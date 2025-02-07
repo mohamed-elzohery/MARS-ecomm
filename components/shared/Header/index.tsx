@@ -4,6 +4,7 @@ import { ShoppingCart, UserIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import ModeToggle from "./ToggleMode";
 
 const Header = () => {
   return (
@@ -23,6 +24,9 @@ const Header = () => {
           </Link>
         </figure>
         <ul className="flex gap-3">
+          <li>
+            <ModeToggle />
+          </li>
           <li>
             <Button asChild variant="ghost">
               <Link href="/cart" className="flex-center">
