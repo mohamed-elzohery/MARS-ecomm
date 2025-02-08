@@ -1,4 +1,5 @@
-import { Product } from "@/app/(root)/page";
+import type { Product } from "@prisma/client";
+
 import {
   Card,
   CardContent,
@@ -8,6 +9,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import ProductPrice from "./ProductPrice";
 
 const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   return (
@@ -29,12 +31,12 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
         </Link>
       </CardContent>
       <CardFooter className="flex justify-between items-center mt-auto">
-        <p className="text-xs">{data.rating} stars</p>
+        <p className="text-xs">{data.rating.toString()} stars</p>
         <p className="text-sm font-medium">
           {data.stock > 0 ? (
-            <p className="font-bold">${data.price}</p>
+            <ProductPrice value={`${data.price}`} />
           ) : (
-            <p className="text-destructive">Out of Stock</p>
+            <span className="text-destructive">Out of Stock</span>
           )}
         </p>
       </CardFooter>
