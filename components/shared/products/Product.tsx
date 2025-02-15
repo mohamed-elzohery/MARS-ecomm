@@ -1,5 +1,3 @@
-import type { Product } from "@prisma/client";
-
 import {
   Card,
   CardContent,
@@ -10,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import ProductPrice from "./ProductPrice";
+import { Product } from "@/types";
 
 const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   return (
