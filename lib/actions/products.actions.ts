@@ -1,11 +1,12 @@
 'use server';
 
 import { prisma } from "@/assets/db/prisma";
-import { LATEST_PRODUCTS_LIMIT } from "../constants";
+import { LATEST_PRODUCTS_LIMIT } from "../constants";   
 import { transformToValidJSON } from "../utils";
+import { Product } from "@/types";
 
-const fetchlatestProducts = async () => {
-    const products =  await prisma.product.findMany({
+export const getLatestProducts = async () => {
+    const products:Product[] =  await prisma.product.findMany({
         take: Number(LATEST_PRODUCTS_LIMIT),
         orderBy: {
             createdAt: 'desc'
@@ -14,4 +15,10 @@ const fetchlatestProducts = async () => {
     return transformToValidJSON(products);
 }
 
-export {fetchlatestProducts}
+export const getProductBySlug = async (slug: string) => {
+    return prisma.product.findFirst({
+        where: {slug}
+    });
+};
+
+

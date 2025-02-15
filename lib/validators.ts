@@ -9,7 +9,7 @@ export const productInsertionSchema = z.object({
     description: z.string().min(3, "Description must be at least 3 characters"),
     stock: z.coerce.number(),
     images: z.array(z.string().min(1, "Product must have at leasr 1 image")),
-    isFeatures: z.boolean(),
+    isFeatured: z.boolean(),
     banner: z.string().nullable(),
     price: z.string().refine((value) => /^\d+(\.\d{2})?$/.test(formatTwoDecimal(value)), "Price must have exactly 2 decimal places"), 
 })
