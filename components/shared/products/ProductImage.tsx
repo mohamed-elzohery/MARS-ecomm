@@ -18,8 +18,7 @@ const ProductImage: React.FC<{ images: Product["images"] }> = ({ images }) => {
         src={images[current]}
         objectFit="cover"
         alt={"product image"}
-        width={1000}
-        height={1000}
+        fill={true}
       />
       <div className="flex gap-3">
         {images.map((src, index) => (
