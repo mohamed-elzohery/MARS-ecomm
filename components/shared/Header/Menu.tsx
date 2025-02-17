@@ -41,7 +41,7 @@ const MenuList: React.FC<{ className: string }> = ({ className }) => {
       </li>
       <li>
         <Button asChild variant="ghost">
-          <Link href="/cart" className="flex-center">
+          <Link href="/signin" className="flex-center">
             <UserIcon /> <span>Sign In</span>
           </Link>
         </Button>
