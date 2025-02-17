@@ -8,12 +8,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { Metadata } from "next";
+import SigninForm from "./components/SigninForm";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Sign In",
 };
 
-const SignInPage = () => {
+const SignInPage = async () => {
+  const session = await auth();
+  if (session) redirect("/");
   return (
     <Card className="min-w-96 flex flex-col justify-center items-center">
       <CardHeader className="flex flex-col items-center">
@@ -21,8 +26,8 @@ const SignInPage = () => {
         <LogoBox />
         <CardDescription>Sign in page</CardDescription>
       </CardHeader>
-      <CardContent>
-        <p>Form will go here</p>
+      <CardContent className="self-stretch">
+        <SigninForm />
       </CardContent>
       <CardFooter></CardFooter>
     </Card>

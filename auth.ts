@@ -37,6 +37,7 @@ export const config = {
             credentials.password as string,
             user.password
           );
+          console.log("isMatch", isMatch)
 
           // If password is correct, return user
           if (isMatch) {
