@@ -11,7 +11,7 @@ const Menu = () => {
   return (
     <>
       <nav className="hidden md:flex">
-        <MenuList className="flex" />
+        <MenuList />
       </nav>
       <div className="md:hidden">
         <Sheet>
@@ -20,7 +20,7 @@ const Menu = () => {
           </SheetTrigger>
           {/* <SheetTitle>Menu</SheetTitle> */}
           <SheetContent>
-            <MenuList className="flex flex-col-reverse mt-8 items-start gap-2" />
+            <MenuList className=" flex-col-reverse items-start " />
           </SheetContent>
         </Sheet>
       </div>
@@ -51,7 +51,7 @@ const SignInButton = () => {
 const MenuList: React.FC<{ className: string }> = async ({ className }) => {
   const session = await auth();
   return (
-    <ul className={`${className}`}>
+    <ul className={`flex gap-2 ${className}`}>
       <li>
         <ModeToggle />
       </li>

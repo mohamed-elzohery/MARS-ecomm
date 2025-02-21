@@ -24,7 +24,7 @@ const UserButton: React.FC<{ user?: User }> = ({ user }) => {
           {initial}
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount={true}>
+      <DropdownMenuContent align="end" forceMount={true}>
         <DropdownMenuLabel className="flex flex-col space-y-1 leading-none">
           <span className="text-sm font-medium ">{user?.name}</span>
           <span className="text-sm text-muted-foreground ">{user?.email}</span>

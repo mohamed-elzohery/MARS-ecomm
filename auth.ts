@@ -37,7 +37,6 @@ export const config = {
             credentials.password as string,
             user.password
           );
-          console.log("isMatch", isMatch)
 
           // If password is correct, return user
           if (isMatch) {
@@ -68,7 +67,28 @@ export const config = {
 
       return session;
     },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async jwt({ token, user }: any) {
+      // Assign user fields to token
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+
+        // If user has no name then use the email
+        if (user.name === 'NO_NAME') {
+          token.name = user.email!.split('@')[0];
+
+          // Update database to reflect the token name
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { name: token.name },
+          });
+        }
+      }
+      return token;
+    },
   },
 } satisfies NextAuthConfig;
+
 
 export const { handlers, auth, signIn, signOut } = NextAuth(config);

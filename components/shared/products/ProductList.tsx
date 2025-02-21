@@ -19,7 +19,7 @@ const ProductsList: React.FC<ProductsListProps> = ({
       <h2 className="text-2xl h2-bold mb-5">{title}</h2>
       <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
         {limitedProducts.map((product) => (
-          <li key={product.slug} className="flex">
+          <li key={product.slug} className="flex justify-center ">
             <ProductCard data={product} />
           </li>
         ))}
