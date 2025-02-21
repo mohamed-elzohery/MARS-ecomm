@@ -16,9 +16,12 @@ export const metadata: Metadata = {
   title: "Sign In",
 };
 
-const SignInPage = async () => {
+const SignInPage: React.FC<{
+  searchParams: Promise<{ callbackUrl?: string }>;
+}> = async ({ searchParams }) => {
   const session = await auth();
-  if (session) redirect("/");
+  const callBackUrl = (await searchParams).callbackUrl;
+  if (session) redirect(callBackUrl || "/");
   return (
     <Card className="min-w-96 flex flex-col justify-center items-center">
       <CardHeader className="flex flex-col items-center">

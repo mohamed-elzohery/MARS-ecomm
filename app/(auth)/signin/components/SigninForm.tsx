@@ -4,16 +4,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { signInEmail } from "@/lib/actions/user.actions";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import React, { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 
 const SigninForm = () => {
+  const searchParams = useSearchParams();
+  const callbackURL = searchParams.get("callbackUrl") || "/";
   const [data, action] = useActionState(signInEmail, {
     success: false,
     message: "",
   });
   return (
     <form action={action} className="flex flex-col gap-6 flex-1">
+      <input type="hidden" name="callbackUrl" value={callbackURL} />
       <div>
         <Label htmlFor="email">Email</Label>
         <Input
