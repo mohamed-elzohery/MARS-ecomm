@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { EllipsisVertical, ShoppingCart, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { auth } from "@/auth";
+import UserButton from "./UserButton";
 
 const Menu = () => {
   return (
@@ -26,26 +28,45 @@ const Menu = () => {
   );
 };
 
-const MenuList: React.FC<{ className: string }> = ({ className }) => {
+const CartButton = () => {
+  return (
+    <Button asChild variant="ghost">
+      <Link href="/cart" className="flex-center">
+        <ShoppingCart /> <span>Cart</span>
+      </Link>
+    </Button>
+  );
+};
+
+const SignInButton = () => {
+  return (
+    <Button asChild variant="ghost">
+      <Link href="/signin" className="flex-center">
+        <UserIcon /> <span>Sign In</span>
+      </Link>
+    </Button>
+  );
+};
+
+const MenuList: React.FC<{ className: string }> = async ({ className }) => {
+  const session = await auth();
   return (
     <ul className={`${className}`}>
       <li>
         <ModeToggle />
       </li>
       <li>
-        <Button asChild variant="ghost">
-          <Link href="/cart" className="flex-center">
-            <ShoppingCart /> <span>Cart</span>
-          </Link>
-        </Button>
+        <CartButton />
       </li>
-      <li>
-        <Button asChild variant="ghost">
-          <Link href="/signin" className="flex-center">
-            <UserIcon /> <span>Sign In</span>
-          </Link>
-        </Button>
-      </li>
+      {session ? (
+        <li>
+          <UserButton user={session.user} />
+        </li>
+      ) : (
+        <li>
+          <SignInButton />
+        </li>
+      )}
     </ul>
   );
 };
