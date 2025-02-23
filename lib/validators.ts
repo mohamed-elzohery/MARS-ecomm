@@ -1,6 +1,7 @@
 import z from 'zod'
 import { formatTwoDecimal } from './utils'
 
+const price = z.string().refine((value) => /^\d+(\.\d{2})?$/.test(formatTwoDecimal(value)), "Price must have exactly 2 decimal places");
 export const productInsertionSchema = z.object({
     name: z.string().min(3, "Name must be at least 3 characters"),
     slug: z.string().min(3, "Slug must be at least 3 characters"),
@@ -11,7 +12,7 @@ export const productInsertionSchema = z.object({
     images: z.array(z.string().min(1, "Product must have at leasr 1 image")),
     isFeatured: z.boolean(),
     banner: z.string().nullable(),
-    price: z.string().refine((value) => /^\d+(\.\d{2})?$/.test(formatTwoDecimal(value)), "Price must have exactly 2 decimal places"), 
+    price
 });
 
 export const signInEmailSchema = z.object({
@@ -27,4 +28,23 @@ export const signUpEmailSchema = z.object({
 }).refine((data) => data.confirmPassword === data.password, {
     message: "Passwords do not match",
     path: ["confirmPassword"]
+});
+
+export const cartItemSchema = z.object({
+    productId: z.string().min(1, 'Product is required'),
+    name: z.string().min(1, 'Name is required'),
+    slug: z.string().min(1, 'Slug is required'),
+    qty: z.number().int().nonnegative("Quantity must be a positive number"),
+    image: z.string().min(1, 'Image is required'),
+    price
+});
+
+export const insertCartSchema = z.object({
+    items: z.array(cartItemSchema),
+    itemsPrice: price,
+    totalPrice: price,
+    shippingPrice: price,
+    taxPrice: price,
+    sessionCartId: z.string().min(1, "Sessopm cart id is required"),
+    userId: z.string().optional().nullable()
 })
