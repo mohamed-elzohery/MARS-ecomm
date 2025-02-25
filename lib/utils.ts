@@ -15,3 +15,9 @@ export const formatTwoDecimal = (value: string) => {
   return dec ? `${int}.${dec.padEnd(2, "0")}` : `${int}.00`;
 } 
 
+export const round2 = (value: string | number) => {
+  if(typeof value === 'number'){
+    return Math.round((value + Number.EPSILON) * 100) / 100;
+  }
+  return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+}

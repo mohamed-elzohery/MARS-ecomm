@@ -103,8 +103,6 @@ export const config = {
       }else {
         return true;
       }
-      return false;
-
     }
   },
 } satisfies NextAuthConfig;
