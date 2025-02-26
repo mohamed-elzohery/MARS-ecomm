@@ -6,6 +6,7 @@ import { cookies } from "next/headers"
 import { cartItemSchema, insertCartSchema } from "../validators";
 import { round2 } from "../utils";
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@prisma/client";
 
 export const addItemToCart = async (cartItem: CartItem) => {
     try {
@@ -13,7 +14,6 @@ export const addItemToCart = async (cartItem: CartItem) => {
     if(!sessionCartId) throw new Error("session cart ID is not found");
     const session = await auth();
     const userId = session?.user?.id;
-    console.log("userid", userId)
     const cart = await getCartItems(sessionCartId, userId);
 
     const item = cartItemSchema.parse(cartItem);
@@ -31,11 +31,23 @@ export const addItemToCart = async (cartItem: CartItem) => {
         await prisma.cart.create({
             data: newCart
         })
-        revalidatePath(`/product/${product.slug}`)
+        
+    }else{
+        const itemInCart = cart.cartItems.find(item => cartItem.productId === item.productId);
+        if(itemInCart){
+            if(product.stock < itemInCart.qty + 1) throw new Error("Not enough stock.");
+            itemInCart.qty = itemInCart.qty + 1;
+            console.log(cart.cartItems)
+        }else{
+            if(product.stock < 1)throw new Error("Not enough stock.");
+            cart.items.push(cartItem);
+        } 
+        await prisma.cart.update({where: {id: cart.id}, data: {items: cart.cartItems as Prisma.CartUpdateitemsInput[], ...calcPrices(cart.items as CartItem[])}})
     }
+    revalidatePath(`/product/${product.slug}`)
     return {
         success: true,
-        message: 'item is added to cart '
+        message: `${product.name} is added to cart.`
     }
     } catch (error) {
         return {
@@ -66,13 +78,13 @@ export async function getCartItems(sessionCartId: string, userId?: string) {
 
 const calcPrices = (items: CartItem[]) => {
     const cartPrice = items.reduce((acc, item) => acc + Number(item.price) * item.qty, 0);
-    const shippingPrice = (cartPrice > 100 ? 0 : 10).toString();
-    const taxPrice = round2(cartPrice * 0.15).toString();
+    const shippingPrice = (cartPrice > 100 ? 0 : 10)
+    const taxPrice = round2(cartPrice * 0.15)
     const totalPrice = round2(cartPrice + shippingPrice + taxPrice).toString();
     return {
         itemsPrice: round2(cartPrice).toString(),
-        shippingPrice,
-        taxPrice,
+        shippingPrice: shippingPrice.toString(),
+        taxPrice: taxPrice.toString(),
         totalPrice
     }
 }

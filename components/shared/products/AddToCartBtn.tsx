@@ -16,7 +16,7 @@ const AddToCartBtn: React.FC<{ item: CartItem }> = ({ item }) => {
         description: res.message,
       });
     console.log("toast shoul be open");
-    toast("Item is added to cart successfully.", {
+    toast(res.message, {
       className: "bg-primary text-white !text-md hover:bg-gray-800",
       action: {
         onClick: () => router.push("/cart"),
