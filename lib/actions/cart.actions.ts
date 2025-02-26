@@ -14,7 +14,7 @@ export const addItemToCart = async (cartItem: CartItem) => {
     if(!sessionCartId) throw new Error("session cart ID is not found");
     const session = await auth();
     const userId = session?.user?.id;
-    const cart = await getCartItems(sessionCartId, userId);
+    const cart = await getCartItems();
 
     const item = cartItemSchema.parse(cartItem);
     const product = await prisma.product.findFirst({
@@ -33,16 +33,16 @@ export const addItemToCart = async (cartItem: CartItem) => {
         })
         
     }else{
-        const itemInCart = cart.cartItems.find(item => cartItem.productId === item.productId);
+        const itemInCart = cart.items.find(item => cartItem.productId === item.productId);
         if(itemInCart){
             if(product.stock < itemInCart.qty + 1) throw new Error("Not enough stock.");
             itemInCart.qty = itemInCart.qty + 1;
-            console.log(cart.cartItems)
+            console.log(cart.items)
         }else{
             if(product.stock < 1)throw new Error("Not enough stock.");
             cart.items.push(cartItem);
         } 
-        await prisma.cart.update({where: {id: cart.id}, data: {items: cart.cartItems as Prisma.CartUpdateitemsInput[], ...calcPrices(cart.items as CartItem[])}})
+        await prisma.cart.update({where: {id: cart.id}, data: {items: cart.items as Prisma.CartUpdateitemsInput[], ...calcPrices(cart.items as CartItem[])}})
     }
     revalidatePath(`/product/${product.slug}`)
     return {
@@ -57,8 +57,44 @@ export const addItemToCart = async (cartItem: CartItem) => {
     }
 }
 
-export async function getCartItems(sessionCartId: string, userId?: string) {
+export const removeItemFromCart = async (productId: string) => {
+    try {
     
+    const cart = await getCartItems();
+    if(cart === undefined) throw new Error("Cart not found");
+
+    const product = await prisma.product.findFirst({
+        where: {id: productId}
+    });
+    if(!product) throw new Error("Product not found");
+
+    const itemInCart = cart.items.find(item => productId === item.productId);
+    if(!itemInCart) throw new Error("Item not found in cart");
+    if(itemInCart.qty > 1){
+        itemInCart.qty = itemInCart.qty - 1;
+    }else{
+        cart.items = cart.items.filter(item => item.productId !== productId);
+    }
+    await prisma.cart.update({where: {id: cart.id}, data: {items: cart.items as Prisma.CartUpdateitemsInput[], ...calcPrices(cart.items as CartItem[])}});
+    revalidatePath(`/product/${product.slug}`)
+    return {
+        success: true,
+        message: `${product.name} is removed from cart.`
+    }
+    } catch (error) {
+          return {
+        success: true,
+        message: (error as Error).message
+    }
+    }
+}
+
+export async function getCartItems() {
+    const sessionCartId = (await cookies()).get('sessionCartId')?.value;
+    if(!sessionCartId) throw new Error("session cart ID is not found");
+
+    const session = await auth();
+    const userId = session?.user?.id;
     const cart = await prisma.cart.findFirst({
         where: userId ? {userId} : {sessionCartId}
     });
@@ -68,7 +104,7 @@ export async function getCartItems(sessionCartId: string, userId?: string) {
     return {
         ...cart,
         sessionCartId: cart.sessionCartId,
-        cartItems: cart.items as CartItem[],
+        items: cart.items as CartItem[],
         itemsPrice: cart.itemsPrice.toString(),
         taxPrice: cart.taxPrice.toString(),
         totalPrice: cart.totalPrice.toString(),
