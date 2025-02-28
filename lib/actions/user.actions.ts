@@ -53,6 +53,17 @@ export const signUpEmail = async (prevState: unknown, formData: FormData) => {
     }
 }
 
+export const getUserByID = async (userId: string) => {
+    const user = await prisma.user.findUnique({where: {id: userId}});
+    if(user === null) throw new Error("User not found");
+    return user;
+}
+
+
+
+
+
+
 // Utils
 const extractErrorMessage = (error: unknown) =>  {
   if(error instanceof ZodError){
