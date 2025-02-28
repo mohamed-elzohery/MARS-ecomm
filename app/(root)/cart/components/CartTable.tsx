@@ -2,6 +2,17 @@
 import { Cart } from "@/types";
 import Link from "next/link";
 import React from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import Image from "next/image";
+import QuantityController from "@/components/shared/products/QuantityController";
+import { useCartOperations } from "@/hooks/cart/useCartOperations";
 
 type CartTableProps = { cart?: Cart };
 
@@ -16,11 +27,51 @@ const CartTable: React.FC<CartTableProps> = ({ cart }) => {
       ) : (
         <div className="grid md:grid-cols-4 md:gap-5">
           <div className="overflow-x-auto md:col-span-3">
-            <h1>Table Data here</h1>
+            <CartItemsTable cart={cart} />
           </div>
         </div>
       )}
     </section>
+  );
+};
+
+const CartItemsTable: React.FC<Required<CartTableProps>> = ({ cart }) => {
+  const { handleAddToCart, handleRemoveFromCart, isPending } =
+    useCartOperations();
+  return (
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Name</TableHead>
+          <TableHead>Quantity</TableHead>
+          <TableHead>Price</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {cart.items.map((item) => (
+          <TableRow key={item.slug}>
+            <TableCell>
+              <Link
+                href={`/products/${item.slug}`}
+                className="flex gap-2 items-center"
+              >
+                <Image
+                  width={50}
+                  height={50}
+                  src={item.image}
+                  alt={item.name}
+                />
+                <span>{item.name}</span>
+              </Link>
+            </TableCell>
+            <TableCell>
+              <QuantityController cartItem={item} />
+            </TableCell>
+            <TableCell className="text-right">{item.price}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   );
 };
 
