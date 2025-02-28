@@ -1,7 +1,7 @@
 "use client";
 import { Cart } from "@/types";
 import Link from "next/link";
-import React from "react";
+import React, { useTransition } from "react";
 import {
   Table,
   TableBody,
@@ -12,7 +12,10 @@ import {
 } from "@/components/ui/table";
 import Image from "next/image";
 import QuantityController from "@/components/shared/products/QuantityController";
-import { useCartOperations } from "@/hooks/cart/useCartOperations";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { ArrowRight, Loader } from "lucide-react";
 
 type CartTableProps = { cart?: Cart };
 
@@ -29,6 +32,15 @@ const CartTable: React.FC<CartTableProps> = ({ cart }) => {
           <div className="overflow-x-auto md:col-span-3">
             <CartItemsTable cart={cart} />
           </div>
+          <Card>
+            <CardContent className="p-3 text-lg flex flex-col gap-3">
+              <span>
+                Subtotal ({cart.items.reduce((a, c) => a + c.qty, 0)}):{" "}
+                <span className="font-bold">{cart.itemsPrice}</span>
+              </span>
+              <ProceedToCheckout />
+            </CardContent>
+          </Card>
         </div>
       )}
     </section>
@@ -36,8 +48,6 @@ const CartTable: React.FC<CartTableProps> = ({ cart }) => {
 };
 
 const CartItemsTable: React.FC<Required<CartTableProps>> = ({ cart }) => {
-  const { handleAddToCart, handleRemoveFromCart, isPending } =
-    useCartOperations();
   return (
     <Table>
       <TableHeader>
@@ -72,6 +82,27 @@ const CartItemsTable: React.FC<Required<CartTableProps>> = ({ cart }) => {
         ))}
       </TableBody>
     </Table>
+  );
+};
+
+const ProceedToCheckout: React.FC = () => {
+  const [isPending, startTransition] = useTransition();
+  const handleClick = () => {
+    startTransition(() => {
+      router.push("/shipping-address");
+    });
+  };
+  const router = useRouter();
+  return (
+    <Button onClick={handleClick} disabled={isPending}>
+      {isPending ? (
+        <Loader className="w-4 h-4 animate-spin" />
+      ) : (
+        <>
+          <ArrowRight className="h-4 w-4" /> Proceed To Checkout{" "}
+        </>
+      )}
+    </Button>
   );
 };
 
