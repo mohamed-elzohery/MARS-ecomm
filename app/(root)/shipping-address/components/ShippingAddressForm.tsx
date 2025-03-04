@@ -15,10 +15,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { ShippingAddress } from "@/types";
 import { shippingAddressSchema } from "@/lib/validators";
+import { useTransition } from "react";
+import { updateUserShippoinfAddress } from "@/lib/actions/user.actions";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { Loader } from "lucide-react";
 
 const ShippingAddressForm: React.FC<{ address: ShippingAddress }> = ({
   address,
 }) => {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
   const form = useForm<ShippingAddress>({
     resolver: zodResolver(shippingAddressSchema),
     defaultValues: {
@@ -33,7 +40,11 @@ const ShippingAddressForm: React.FC<{ address: ShippingAddress }> = ({
   });
 
   const onSubmit = (values: ShippingAddress) => {
-    console.log(values);
+    startTransition(async () => {
+      const res = await updateUserShippoinfAddress(values);
+      if (!res.success) toast.error(res.message);
+      else router.push("/payment");
+    });
   };
   console.log("Form errors:", form.formState.errors);
   return (
@@ -112,7 +123,9 @@ const ShippingAddressForm: React.FC<{ address: ShippingAddress }> = ({
         />
 
         <div className="col-span-full flex justify-end">
-          <Button type="submit">Save Address</Button>
+          <Button type="submit" disabled={pending} className="flex gap-2">
+            {pending && <Loader className="h-4 w-4" />}Save Address
+          </Button>
         </div>
       </form>
     </Form>
