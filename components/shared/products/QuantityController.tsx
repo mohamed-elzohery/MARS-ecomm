@@ -30,9 +30,7 @@ const QuantityController: React.FC<QuantityControllerProps> = ({
   };
 
   return (
-    <div
-      className={`flex items-center justify-center ${sizeClasses[size]} ${className}`}
-    >
+    <div className={`flex items-center  ${sizeClasses[size]} ${className}`}>
       <Button
         variant={"outline"}
         onClick={handleRemoveFromCart}

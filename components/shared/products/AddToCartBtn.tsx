@@ -11,7 +11,7 @@ const AddToCartBtn: React.FC<{ item: CartItem; cart?: Cart }> = ({
 }) => {
   const itemInCart = cart?.items.find((i) => i.productId === item.productId);
   return itemInCart ? (
-    <QuantityController cartItem={itemInCart} />
+    <QuantityController cartItem={itemInCart} className="justify-center" />
   ) : (
     <AddToCart item={item} />
   );

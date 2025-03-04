@@ -28,12 +28,12 @@ const CartTable: React.FC<CartTableProps> = ({ cart }) => {
           No items in cart. <Link href={"/"}>Go Shopping</Link>
         </p>
       ) : (
-        <div className="grid md:grid-cols-4 md:gap-5">
+        <div className="grid md:grid-cols-4 md:gap-5 items-start">
           <div className="overflow-x-auto md:col-span-3">
             <CartItemsTable cart={cart} />
           </div>
-          <Card>
-            <CardContent className="p-3 text-lg flex flex-col gap-3">
+          <Card className="flex">
+            <CardContent className="p-3 text-lg flex flex-col gap-3 justify-between flex-1">
               <span>
                 Subtotal ({cart.items.reduce((a, c) => a + c.qty, 0)}):{" "}
                 <span className="font-bold">{cart.itemsPrice}</span>
@@ -75,9 +75,9 @@ const CartItemsTable: React.FC<Required<CartTableProps>> = ({ cart }) => {
               </Link>
             </TableCell>
             <TableCell>
-              <QuantityController cartItem={item} />
+              <QuantityController cartItem={item} className="justify-start" />
             </TableCell>
-            <TableCell className="text-right">{item.price}</TableCell>
+            <TableCell className="text-left">{item.price}</TableCell>
           </TableRow>
         ))}
       </TableBody>
