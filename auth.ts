@@ -5,11 +5,12 @@ import type { NextAuthConfig } from 'next-auth';
 import { prisma } from './assets/db/prisma';
 import {compareSync} from 'bcrypt-ts-edge';
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 export const config = {
   pages: {
-    signIn: '/sign-in',
-    error: '/sign-in',
+    signIn: '/signin',
+    error: '/signin',
   },
   session: {
     strategy: 'jwt',
@@ -69,7 +70,7 @@ export const config = {
       return session;
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async jwt({ token, user }: any) {
+    async jwt({ token, user, trigger }: any) {
       // Assign user fields to token
       if (user) {
         token.id = user.id;
@@ -85,11 +86,50 @@ export const config = {
             data: { name: token.name },
           });
         }
+
+        if(trigger === 'signIn' || trigger === 'signUp'){
+          const cookiesObject = await cookies();
+          const sessionCartId = cookiesObject.get('sessionCartId')?.value;
+          console.log("triggered", sessionCartId);
+          if(sessionCartId){
+            const cart = await prisma.cart.findFirst({
+              where: {
+                sessionCartId
+              }});
+            if(cart){
+              await prisma.cart.deleteMany({
+                where: {
+                  userId: user.id
+                }
+              });
+              await prisma.cart.update({
+                where: {
+                  id: cart.id
+                },
+                data: {
+                  userId: user.id
+                }
+              });
+            }
+          }
+        }
       }
       return token;
     },
-    async authorized({ request}) {
+    async authorized({ request, auth}) {
       // Check if the user is authorized
+      const protectedRoutes = [
+        /\/shipping-address/,
+        /\/payment/,
+        /\/place-order/,
+        /\/profile/,
+        /\/user\/(.*)/,
+        /\/order/,
+        /\/admin/
+      ];
+
+      const {pathname} = request.nextUrl;
+      if(!auth && protectedRoutes.some(route => route.test(pathname))) return false;
       if(!request.cookies.get('sessionCartId') ){
         const sessionCartId = crypto.randomUUID();
         const headers = new Headers(request.headers);
