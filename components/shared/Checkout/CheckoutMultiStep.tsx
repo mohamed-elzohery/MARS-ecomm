@@ -5,7 +5,7 @@ import React from "react";
 const CheckoutMultiStep: React.FC<{ current: number }> = ({ current = 0 }) => {
   const stages = ["Login", "Shipping", "Payment", "Place Order"];
   return (
-    <header className="flex items-center flex-col md:flex-row justify-between gap-3">
+    <header className="flex items-center flex-col md:flex-row justify-between gap-3 my-4">
       {stages.map((step, index) => {
         const isActive = index === current;
         // const isCompleted = index < current;
