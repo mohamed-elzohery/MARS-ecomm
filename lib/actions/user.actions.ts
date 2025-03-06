@@ -1,13 +1,13 @@
 'use server';
 
 import { isRedirectError } from "next/dist/client/components/redirect-error";
-import { shippingAddressSchema, signInEmailSchema, signUpEmailSchema } from "../validators";
+import { paymentMethodSchema, shippingAddressSchema, signInEmailSchema, signUpEmailSchema } from "../validators";
 import { auth, signIn, signOut } from "@/auth";
 import { hashSync } from "bcrypt-ts-edge";
 import { prisma } from "@/assets/db/prisma";
 import { ZodError } from "zod";
 import { PrismaClientKnownRequestError, PrismaClientValidationError } from "@prisma/client/runtime/library";
-import { ShippingAddress } from "@/types";
+import { PaymentMethod, ShippingAddress } from "@/types";
 import { redirect } from "next/navigation";
 
 export const signInEmail =async (prevState: unknown, formData: FormData) => {
@@ -71,6 +71,32 @@ export const updateUserShippoinfAddress = async (address: ShippingAddress) => {
         });
         if(user === null) throw new Error("User not found");
         return {success: true, message: 'Shipping address updated successfully'}
+    } catch (error) {
+        return {success: false, message: extractErrorMessage(error)}
+    }
+};
+
+export const updatePaymentMethod = async (paymentMethod: PaymentMethod) => {
+    try {
+        const session = await auth();
+        if(!session?.user?.id) return {
+            success: false,
+            message: "User not found"
+        };
+        const currentUser = await prisma.user.findUnique({where: {id: session.user.id}});
+        if(currentUser === null) return {
+            success: false,
+            message: "User not found"
+        };
+        const method = paymentMethodSchema.parse(paymentMethod);
+        await prisma.user.update({
+            where: {id: session.user.id},
+            data: {paymentMethod: method.type}
+        });
+        return {
+            success: true,
+            message: 'Payment method updated successfully'
+        }
     } catch (error) {
         return {success: false, message: extractErrorMessage(error)}
     }
