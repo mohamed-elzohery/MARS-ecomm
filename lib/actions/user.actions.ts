@@ -5,10 +5,9 @@ import { paymentMethodSchema, shippingAddressSchema, signInEmailSchema, signUpEm
 import { auth, signIn, signOut } from "@/auth";
 import { hashSync } from "bcrypt-ts-edge";
 import { prisma } from "@/assets/db/prisma";
-import { ZodError } from "zod";
-import { PrismaClientKnownRequestError, PrismaClientValidationError } from "@prisma/client/runtime/library";
 import { PaymentMethod, ShippingAddress } from "@/types";
 import { redirect } from "next/navigation";
+import { extractErrorMessage } from "../server-utils";
 
 export const signInEmail =async (prevState: unknown, formData: FormData) => {
     try {
@@ -103,13 +102,3 @@ export const updatePaymentMethod = async (paymentMethod: PaymentMethod) => {
 }
 
 
-// Utils
-const extractErrorMessage = (error: unknown) =>  {
-  if(error instanceof ZodError){
-    return error.errors.map((err) => err.message).join(", ");
-  }
-// handle data base errors
-if(error instanceof PrismaClientValidationError) return error.message;
-  if(error instanceof PrismaClientKnownRequestError) return error.meta?.target + " already exists";
-  return error instanceof Error ? error.message : "An error occurred";
-}

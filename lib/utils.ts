@@ -21,3 +21,4 @@ export const round2 = (value: string | number) => {
   }
   return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
 }
+

@@ -17,6 +17,7 @@ import Image from "next/image";
 import { getCartItems } from "@/lib/actions/cart.actions";
 import { getUserByID } from "@/lib/actions/user.actions";
 import CheckoutMultiStep from "@/components/shared/Checkout/CheckoutMultiStep";
+import PlacePrderForm from "./components/PlacePrderForm";
 
 export const metadata: Metadata = {
   title: "Place Order",
@@ -134,6 +135,7 @@ const PlaceOrderPage = async () => {
               {/* <PlaceOrderForm /> */}
             </CardContent>
           </Card>
+          <PlacePrderForm />
         </div>
       </div>
     </>
