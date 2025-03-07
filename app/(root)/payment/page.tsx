@@ -12,8 +12,16 @@ const PaymentPage = async () => {
 
   return (
     <>
-      <CheckoutMultiStep current={2} />
-      <PaymentMethodForm preferedMethod={user.paymentMethod} />
+      <div className="flex flex-col gap-6">
+        <CheckoutMultiStep current={2} />
+        <section className="grid gap-4 max-w-md self-center">
+          <h1 className="h2-bold">Shipping Address</h1>
+          <p className="text-sm text-muted-foreground">
+            Please select a payment method
+          </p>
+          <PaymentMethodForm preferedMethod={user.paymentMethod} />
+        </section>
+      </div>
     </>
   );
 };
