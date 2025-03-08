@@ -20,5 +20,43 @@ export const round2 = (value: string | number) => {
     return Math.round((value + Number.EPSILON) * 100) / 100;
   }
   return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+};
+
+export const formatOrderId = (orderId: string) => {
+  return `..${orderId.substring(orderId.length - 6)}`
+}
+
+export const formatDateTime = (date: Date) => {
+  const dateTimeOptions: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hour12: true
+  };
+  const dateOptions: Intl.DateTimeFormatOptions = {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  }
+
+  const timeOptions: Intl.DateTimeFormatOptions = {
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hour12: true
+  }
+  const formattedDateTime = new Date(date).toLocaleString('en-US', dateTimeOptions);
+  const formattedDate = new Date(date).toLocaleString('en-US', dateOptions);
+  const formattedTime = new Date(date).toLocaleString('en-US', timeOptions);
+
+  return {
+    dateTime: formattedDateTime,
+    date: formattedDate,
+    time: formattedTime
+  }
 }
 

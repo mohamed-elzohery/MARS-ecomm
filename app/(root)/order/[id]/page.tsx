@@ -15,7 +15,7 @@ const page: React.FC<{
   const order = await getOrderByID(id);
   if (!order) notFound();
 
-  return <div>{"" + order.itemsPrice}</div>;
+  return <div>{order.itemsPrice}</div>;
 };
 
 export default page;

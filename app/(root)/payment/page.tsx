@@ -3,6 +3,13 @@ import React from "react";
 import PaymentMethodForm from "./components/PaymentMethodForm";
 import { auth } from "@/auth";
 import { getUserByID } from "@/lib/actions/user.actions";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Payment",
+  description:
+    "Select a payment method. we support multiple payment methods like PayPal, Stripe and cash on delivery.",
+};
 
 const PaymentPage = async () => {
   const session = await auth();
