@@ -7,6 +7,7 @@ import { prisma } from "@/assets/db/prisma";
 import { insertOrderSchema } from "../validators";
 import { CartItem } from "@/types";
 import { extractErrorMessage } from "../server-utils";
+import { transformToValidJSON } from "../utils";
 
 
 export const placeOrder = async () => {
@@ -75,4 +76,12 @@ export const placeOrder = async () => {
             message: extractErrorMessage(error)
         }
     }
+};
+
+export const getOrderByID = async (orderId: string) => {
+    const order = await prisma.order.findUnique({
+        where: {id: orderId},
+        include: {orderItems: true, user: {select: {name: true, email: true}}}
+    });
+    return transformToValidJSON(order);
 }
