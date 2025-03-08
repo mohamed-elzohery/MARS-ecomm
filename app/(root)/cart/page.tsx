@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import React from "react";
 import CartTable from "./components/CartTable";
 
-export const metaData: Metadata = {
+export const metadata: Metadata = {
   title: "Cart",
   description: "See all the items in your cart.",
 };

@@ -48,7 +48,7 @@ const SignInButton = () => {
   );
 };
 
-const MenuList: React.FC<{ className: string }> = async ({ className }) => {
+const MenuList: React.FC<{ className?: string }> = async ({ className }) => {
   const session = await auth();
   return (
     <ul className={`flex gap-2 ${className}`}>
