@@ -1,3 +1,4 @@
+import { ShippingAddress } from '@/types';
 import { Pool, neonConfig } from '@neondatabase/serverless';
 import { PrismaNeon } from '@prisma/adapter-neon';
 import { PrismaClient } from '@prisma/client';
@@ -79,6 +80,10 @@ export const prisma = new PrismaClient({ adapter }).$extends({
           return order.shippingPrice.toString();
         },
       },
+      shippingAddress: {
+        needs: {shippingAddress: true},
+        compute(order) {return order.shippingAddress as ShippingAddress}
+      }
     },
     orderItem: {
       price: {
@@ -86,6 +91,7 @@ export const prisma = new PrismaClient({ adapter }).$extends({
           return orderItem.price.toString();
         },
       },
-    }
+    },
+    
   },
 });

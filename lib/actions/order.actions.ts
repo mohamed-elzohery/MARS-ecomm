@@ -79,6 +79,10 @@ export const placeOrder = async () => {
 };
 
 export const getOrderByID = async (orderId: string) => {
+    // TEMP: This is a temporary solution to get the order by ID
+    // This will be replaced with a more secure solution in the future
+    // Only the user who placed the order should be able to see the order
+    // Admins should be able to see all orders
     const order = await prisma.order.findUnique({
         where: {id: orderId},
         include: {orderItems: true, user: {select: {name: true, email: true}}}

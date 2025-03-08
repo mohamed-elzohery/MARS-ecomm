@@ -2,6 +2,7 @@ import { getOrderByID } from "@/lib/actions/order.actions";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import React from "react";
+import OrderDetailsTable from "./components/OrderDetailsTable";
 
 export const metadata: Metadata = {
   title: "Order Details",
@@ -15,7 +16,7 @@ const page: React.FC<{
   const order = await getOrderByID(id);
   if (!order) notFound();
 
-  return <div>{order.itemsPrice}</div>;
+  return <OrderDetailsTable order={order} />;
 };
 
 export default page;
