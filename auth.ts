@@ -1,11 +1,10 @@
-import NextAuth from 'next-auth';
+import NextAuth, { NextAuthConfig } from 'next-auth';
+import { authConfig } from './auth.config';
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import type { NextAuthConfig } from 'next-auth';
-import { prisma } from './assets/db/prisma';
-import {compareSync} from 'bcrypt-ts-edge';
-import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { compare } from './lib/encrypt';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { prisma } from './assets/db/prisma';
 
 export const config = {
   pages: {
@@ -35,7 +34,7 @@ export const config = {
 
         // Check if user exists and if the password matches
         if (user && user.password) {
-          const isMatch = compareSync(
+          const isMatch = await compare(
             credentials.password as string,
             user.password
           );
@@ -56,6 +55,7 @@ export const config = {
     }),
   ],
   callbacks: {
+    ...authConfig.callbacks,
     async session({ session, user, trigger, token }) {
       // Set the user ID from the token
       session.user.id = token.sub as string;
@@ -116,34 +116,7 @@ export const config = {
       }
       return token;
     },
-    async authorized({ request, auth}) {
-      // Check if the user is authorized
-      const protectedRoutes = [
-        /\/shipping-address/,
-        /\/payment/,
-        /\/place-order/,
-        /\/profile/,
-        /\/user\/(.*)/,
-        /\/order/,
-        /\/admin/
-      ];
-
-      const {pathname} = request.nextUrl;
-      if(!auth && protectedRoutes.some(route => route.test(pathname))) return false;
-      if(!request.cookies.get('sessionCartId') ){
-        const sessionCartId = crypto.randomUUID();
-        const headers = new Headers(request.headers);
-        const response = NextResponse.next({
-          request: {
-            headers
-          }
-        });
-        response.cookies.set('sessionCartId', sessionCartId);
-        return response;
-      }else {
-        return true;
-      }
-    }
+    
   },
 } satisfies NextAuthConfig;
 
