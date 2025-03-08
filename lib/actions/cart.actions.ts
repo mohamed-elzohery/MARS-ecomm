@@ -1,5 +1,5 @@
 'use server'
-import { prisma } from "@/assets/db/prisma";
+import { prisma } from "@/db/prisma";
 import { auth } from "@/auth";
 import { CartItem } from "@/types"
 import { cookies } from "next/headers"

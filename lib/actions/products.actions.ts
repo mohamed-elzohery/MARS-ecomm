@@ -1,6 +1,6 @@
 'use server';
 
-import { prisma } from "@/assets/db/prisma";
+import { prisma } from "@/db/prisma";
 import { LATEST_PRODUCTS_LIMIT } from "../constants";   
 import { transformToValidJSON } from "../utils";
 import { Product } from "@/types";

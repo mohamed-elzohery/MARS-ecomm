@@ -3,7 +3,7 @@
 import { auth } from "@/auth";
 import {  getUserByID } from "./user.actions";
 import { getCartItems } from "./cart.actions";
-import { prisma } from "@/assets/db/prisma";
+import { prisma } from "@/db/prisma";
 import { insertOrderSchema } from "../validators";
 import { CartItem } from "@/types";
 import { extractErrorMessage } from "../server-utils";

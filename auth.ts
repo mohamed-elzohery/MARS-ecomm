@@ -1,18 +1,19 @@
-import NextAuth, { NextAuthConfig } from 'next-auth';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import NextAuth from 'next-auth';
 import { authConfig } from './auth.config';
 import { PrismaAdapter } from '@auth/prisma-adapter';
+import { prisma } from '@/db/prisma';
 import { cookies } from 'next/headers';
 import { compare } from './lib/encrypt';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { prisma } from './assets/db/prisma';
 
 export const config = {
   pages: {
-    signIn: '/signin',
-    error: '/signin',
+    signIn: '/sign-in',
+    error: '/sign-in',
   },
   session: {
-    strategy: 'jwt',
+    strategy: 'jwt' as const,
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   adapter: PrismaAdapter(prisma),
@@ -56,12 +57,12 @@ export const config = {
   ],
   callbacks: {
     ...authConfig.callbacks,
-    async session({ session, user, trigger, token }) {
+    async session({ session, user, trigger, token }: any) {
       // Set the user ID from the token
-      session.user.id = token.sub as string;
-      //   @ts-expect-error role is not part of session.user object
-      session.user.role = token.role as string;
+      session.user.id = token.sub;
+      session.user.role = token.role;
       session.user.name = token.name;
+
       // If there is an update, set the user name
       if (trigger === 'update') {
         session.user.name = user.name;
@@ -69,8 +70,7 @@ export const config = {
 
       return session;
     },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async jwt({ token, user, trigger }: any) {
+    async jwt({ token, user, trigger, session }: any) {
       // Assign user fields to token
       if (user) {
         token.id = user.id;
@@ -87,38 +87,39 @@ export const config = {
           });
         }
 
-        if(trigger === 'signIn' || trigger === 'signUp'){
+        if (trigger === 'signIn' || trigger === 'signUp') {
           const cookiesObject = await cookies();
           const sessionCartId = cookiesObject.get('sessionCartId')?.value;
-          console.log("triggered", sessionCartId);
-          if(sessionCartId){
-            const cart = await prisma.cart.findFirst({
-              where: {
-                sessionCartId
-              }});
-            if(cart){
+
+          if (sessionCartId) {
+            const sessionCart = await prisma.cart.findFirst({
+              where: { sessionCartId },
+            });
+
+            if (sessionCart) {
+              // Delete current user cart
               await prisma.cart.deleteMany({
-                where: {
-                  userId: user.id
-                }
+                where: { userId: user.id },
               });
+
+              // Assign new cart
               await prisma.cart.update({
-                where: {
-                  id: cart.id
-                },
-                data: {
-                  userId: user.id
-                }
+                where: { id: sessionCart.id },
+                data: { userId: user.id },
               });
             }
           }
         }
       }
+
+      // Handle session updates
+      if (session?.user.name && trigger === 'update') {
+        token.name = session.user.name;
+      }
+
       return token;
     },
-    
   },
-} satisfies NextAuthConfig;
-
+};
 
 export const { handlers, auth, signIn, signOut } = NextAuth(config);

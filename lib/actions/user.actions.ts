@@ -4,7 +4,7 @@ import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { paymentMethodSchema, shippingAddressSchema, signInEmailSchema, signUpEmailSchema } from "../validators";
 import { auth, signIn, signOut } from "@/auth";
 import { hashSync } from "bcrypt-ts-edge";
-import { prisma } from "@/assets/db/prisma";
+import { prisma } from "@/db/prisma";
 import { PaymentMethod, ShippingAddress } from "@/types";
 import { redirect } from "next/navigation";
 import { extractErrorMessage } from "../server-utils";
