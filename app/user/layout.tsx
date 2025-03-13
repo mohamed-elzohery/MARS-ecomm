@@ -1,13 +1,12 @@
-import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
 import LogoBox from "@/components/shared/Header/LogoBox";
 import Menu from "@/components/shared/Header/Menu";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import { Toaster } from "sonner";
+import UserNav from "./UserNav";
 
 export const metadata: Metadata = {
-  title: "HOME",
+  title: "User",
 };
 
 export default function RootLayout({
@@ -19,12 +18,15 @@ export default function RootLayout({
     <div className="flex flex-col h-screen">
       <ThemeProvider attribute="class" disableTransitionOnChange={true}>
         <Header className="wrapper flex-between">
-          <LogoBox />
+          <div className="flex items-center gap-6">
+            <LogoBox />
+            <UserNav />
+          </div>
           <Menu />
         </Header>
-        <main className="wrapper flex-1">{children}</main>
-        <Toaster />
-        <Footer />
+        <main className="container flex flex-col mx-auto p-8 space-y-4 pt-6">
+          {children}
+        </main>
       </ThemeProvider>
     </div>
   );
