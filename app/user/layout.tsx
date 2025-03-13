@@ -17,14 +17,14 @@ export default function RootLayout({
   return (
     <div className="flex flex-col h-screen">
       <ThemeProvider attribute="class" disableTransitionOnChange={true}>
-        <Header className="wrapper flex-between">
+        <Header>
           <div className="flex items-center gap-6">
             <LogoBox />
             <UserNav />
           </div>
           <Menu />
         </Header>
-        <main className="container flex flex-col mx-auto p-8 space-y-4 pt-6">
+        <main className="wrapper flex flex-col mx-auto p-8 space-y-4 pt-6">
           {children}
         </main>
       </ThemeProvider>

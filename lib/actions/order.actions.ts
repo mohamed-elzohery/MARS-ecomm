@@ -255,7 +255,7 @@ export const getMyOrders = async ({page = 1 , limit=Number(PAGE_SIZE)}: {page: n
         orderBy: {createdAt: "desc"},
         skip: (page - 1) * limit,
         take: limit,
-        select: {id: true, createdAt: true, totalPrice: true, isPaid: true, isDelivered: true}
+        select: {id: true, createdAt: true, totalPrice: true, isPaid: true, isDelivered: true, paidAt: true, deliveredAt: true}
       });
 
       const count = await prisma.order.count({where: {userId}});

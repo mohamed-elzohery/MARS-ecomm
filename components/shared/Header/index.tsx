@@ -8,7 +8,7 @@ const Header: React.FC<PropsWithChildren & HTMLAttributes<HTMLElement>> = ({
 }) => {
   return (
     <header className={cn("border-b", className)} {...props}>
-      {children}
+      <div className="wrapper flex-between">{children}</div>
     </header>
   );
 };

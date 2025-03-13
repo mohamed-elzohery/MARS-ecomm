@@ -18,7 +18,7 @@ export default function RootLayout({
   return (
     <div className="flex flex-col h-screen">
       <ThemeProvider attribute="class" disableTransitionOnChange={true}>
-        <Header className="wrapper flex-between">
+        <Header>
           <LogoBox />
           <Menu />
         </Header>

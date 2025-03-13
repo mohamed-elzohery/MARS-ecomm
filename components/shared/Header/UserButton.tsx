@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { signOutUser } from "@/lib/actions/user.actions";
+import Link from "next/link";
 
 import { User } from "next-auth";
 import React from "react";
@@ -29,6 +30,16 @@ const UserButton: React.FC<{ user?: User }> = ({ user }) => {
           <span className="text-sm font-medium ">{user?.name}</span>
           <span className="text-sm text-muted-foreground ">{user?.email}</span>
         </DropdownMenuLabel>
+        <DropdownMenuItem>
+          <Link href="/user/profile" className="flex-1">
+            Profile
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href="/user/orders" className="flex-1">
+            Orders
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem className="flex">
           <form action={signOutUser} className="flex flex-1">
             <Button
