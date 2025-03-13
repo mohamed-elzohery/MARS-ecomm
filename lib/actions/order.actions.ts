@@ -10,6 +10,7 @@ import { extractErrorMessage } from "../server-utils";
 import { transformToValidJSON } from "../utils";
 import { paypal } from "../paypal";
 import { revalidatePath } from "next/cache";
+import { PAGE_SIZE } from "../constants";
 
 
 export const placeOrder = async () => {
@@ -241,4 +242,32 @@ export async function updateOrderToPaid({
   if (!updatedOrder) throw new Error('Order not found');
 
   return updatedOrder
+}
+
+export const getMyOrders = async ({page = 1 , limit=Number(PAGE_SIZE)}: {page: number, limit:number}) => {
+  try{
+    const session = await auth();
+    if(session === null) throw new Error("User not found");
+    const userId = session.user?.id;
+    if(!userId) throw new Error("User not found");
+    const orders = await prisma.order.findMany({
+        where: {userId},
+        orderBy: {createdAt: "desc"},
+        skip: (page - 1) * limit,
+        take: limit,
+        select: {id: true, createdAt: true, totalPrice: true, isPaid: true, isDelivered: true}
+      });
+
+      const count = await prisma.order.count({where: {userId}});
+
+      return {
+        success: true,
+        data: {orders, count, totalpages: Math.ceil(count / limit)}
+      }
+  }catch(error){
+    return {
+      success: false,
+      message: extractErrorMessage(error)
+  }
+}
 }
