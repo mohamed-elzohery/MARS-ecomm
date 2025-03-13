@@ -16,7 +16,12 @@ const page: React.FC<{
   const order = await getOrderByID(id);
   if (!order) notFound();
 
-  return <OrderDetailsTable order={order} />;
+  return (
+    <OrderDetailsTable
+      clientId={process.env.PAYPAL_CLIENT_ID || "sb"}
+      order={order}
+    />
+  );
 };
 
 export default page;

@@ -113,6 +113,12 @@ export const createPayPalOrder = async (orderData: Order) => {
             }
         })
 
+         return {
+        success: true,
+        message: 'Item order created successfully',
+        data: payPalOrder.id,
+      };
+
     } catch (error) {
         return {
             success: false,
@@ -195,6 +201,17 @@ export async function updateOrderToPaid({
   await prisma.$transaction(async (tx) => {
     // Iterate over products and update stock
     for (const item of order.orderItems) {
+        const product = await prisma.product.findUnique({
+    where: { id: item.productId }
+  });
+  
+  if (!product || product.stock < item.qty) {
+    return {
+      success: false,
+      message: `Sorry, only ${product?.stock || 0} units of "${product?.name}" are available.`,
+      redirectURL: "/cart"
+    };
+  }
       await tx.product.update({
         where: { id: item.productId },
         data: { stock: { increment: -item.qty } },

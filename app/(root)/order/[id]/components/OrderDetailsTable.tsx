@@ -13,11 +13,23 @@ import { formatDateTime, formatOrderId } from "@/lib/utils";
 import { Order } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
+import {
+  PayPalScriptProvider,
+  PayPalButtons,
+  usePayPalScriptReducer,
+} from "@paypal/react-paypal-js";
+import {
+  approvePayPalOrder,
+  createPayPalOrder,
+} from "@/lib/actions/order.actions";
+import { toast } from "sonner";
 
 const OrderDetailsTable = ({
   order,
+  clientId,
 }: {
   order: Omit<Order, "paymentResult">;
+  clientId: string;
 }) => {
   const {
     id,
@@ -34,6 +46,15 @@ const OrderDetailsTable = ({
     deliveredAt,
   } = order;
 
+  const handleCreateOrder = async () => {
+    const res = await createPayPalOrder(order);
+    if (!res.success) return toast(res.message);
+    return res.data;
+  };
+  const handleApproveOrder = async (data: { orderID: string }) => {
+    const res = await approvePayPalOrder(order.id, data);
+    toast(res.message);
+  };
   return (
     <>
       <h1 className="py-4 text-2xl">Order {formatOrderId(id)}</h1>
@@ -129,12 +150,33 @@ const OrderDetailsTable = ({
                 <div>Total</div>
                 <div>{totalPrice}</div>
               </div>
+              {!order.isPaid && (
+                <PayPalScriptProvider options={{ clientId }}>
+                  <PrintPayPalStatus />
+                  <PayPalButtons
+                    onApprove={handleApproveOrder}
+                    createOrder={handleCreateOrder}
+                  />
+                </PayPalScriptProvider>
+              )}
             </CardContent>
           </Card>
         </div>
       </div>
     </>
   );
+};
+
+const PrintPayPalStatus = () => {
+  const [{ isPending, isRejected }] = usePayPalScriptReducer();
+
+  let status = "";
+  if (isPending) {
+    status = "Loading PayPal script...";
+  } else if (isRejected) {
+    status = "Error loading paypal";
+  }
+  return status;
 };
 
 export default OrderDetailsTable;
