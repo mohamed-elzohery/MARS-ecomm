@@ -5,7 +5,7 @@ import { paymentMethodSchema, shippingAddressSchema, signInEmailSchema, signUpEm
 import { auth, signIn, signOut } from "@/auth";
 import { hashSync } from "bcrypt-ts-edge";
 import { prisma } from "@/db/prisma";
-import { PaymentMethod, ShippingAddress } from "@/types";
+import { PaymentMethod, ShippingAddress, UpdateUserData } from "@/types";
 import { redirect } from "next/navigation";
 import { extractErrorMessage } from "../server-utils";
 
@@ -98,6 +98,28 @@ export const updatePaymentMethod = async (paymentMethod: PaymentMethod) => {
         }
     } catch (error) {
         return {success: false, message: extractErrorMessage(error)}
+    }
+}
+
+export const updateProfile = async (data: UpdateUserData) => {
+    try{
+        const session = await auth();
+        if(session === null || !session.user?.id) throw new Error("User not authenticated");
+        
+         await prisma.user.update({
+            where: {id: session.user.id},
+            data: data
+        });
+        
+        return {
+            success: true,
+            message: 'Profile updated successfully'
+        }
+    }catch(error){
+        return {
+            success: false,
+            message: extractErrorMessage(error)
+        }
     }
 }
 
