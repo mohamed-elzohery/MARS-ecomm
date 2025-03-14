@@ -9,8 +9,8 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 
 export const config = {
   pages: {
-    signIn: '/sign-in',
-    error: '/sign-in',
+    signIn: '/signin',
+    error: '/signin',
   },
   session: {
     strategy: 'jwt' as const,
@@ -25,7 +25,6 @@ export const config = {
       },
       async authorize(credentials) {
         if (credentials == null) return null;
-
         // Find user in database
         const user = await prisma.user.findFirst({
           where: {

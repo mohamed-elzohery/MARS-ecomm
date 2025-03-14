@@ -1,5 +1,5 @@
 "use client";
-import React, { useActionState } from "react";
+import React from "react";
 import { useSession } from "next-auth/react";
 import { updateProfile } from "@/lib/actions/user.actions";
 import { useForm } from "react-hook-form";
@@ -15,19 +15,37 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { UpdateUserData } from "@/types";
+import { toast } from "sonner";
 
 const UpdateProfileForm = () => {
-  const { data, update } = useSession();
+  const { data: session, update } = useSession();
   const form = useForm({
     defaultValues: {
-      name: data?.user?.name || "",
-      email: data?.user?.email || "",
+      name: session?.user?.name || "",
+      email: session?.user?.email || "",
     },
     resolver: zodResolver(updateUserSchema),
   });
 
-  const handleFormSubmit = async () => {
-    // await updateProfile();
+  const handleFormSubmit = async (values: UpdateUserData) => {
+    const res = await updateProfile(values);
+
+    if (!res.success) {
+      return toast.error(res.message);
+    }
+
+    const newSession = {
+      ...session,
+      user: {
+        ...session?.user,
+        name: values.name,
+      },
+    };
+
+    await update(newSession);
+
+    toast(res.message);
   };
   return (
     <Form {...form}>

@@ -27,6 +27,7 @@ export const signInEmail =async (prevState: unknown, formData: FormData) => {
 
 export const signOutUser = async () => {
     await signOut();
+    redirect('/')
 }
 
 export const signUpEmail = async (prevState: unknown, formData: FormData) => {

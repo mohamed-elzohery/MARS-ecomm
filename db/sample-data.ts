@@ -1,16 +1,19 @@
-import {hashSync} from 'bcrypt-ts-edge'
-const sampleData = {
+import { hash } from "@/lib/encrypt";
+
+export const generateFakeData = async () => {
+  const hashedPassword = await hash('123123');
+  return  {
  users: [
     {
       name: 'John',
       email: 'admin@example.com',
-      password: hashSync('123123', 10),
+      password: hashedPassword,
       role: 'admin',
     },
     {
       name: 'Jane',
       email: 'user@example.com',
-      password: hashSync('123123', 10),
+      password: hashedPassword,
       role: 'user',
     },
   ],
@@ -120,4 +123,4 @@ const sampleData = {
   ],
 };
 
-export default sampleData;
+}
