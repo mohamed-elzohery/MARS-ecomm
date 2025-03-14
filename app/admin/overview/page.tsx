@@ -1,4 +1,3 @@
-import { auth } from "@/auth";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Table,
@@ -15,10 +14,10 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
 import Chart from "./components/Chart";
+import { requireAdmin } from "@/lib/auth-guard";
 
 const OverviewPage = async () => {
-  const session = await auth();
-  if (session?.user.role !== "admin") redirect("/");
+  await requireAdmin();
   const res = await getOrdersOverviewData();
   if (!res.data) return redirect("/");
   const {

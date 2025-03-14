@@ -11,7 +11,6 @@ import { transformToValidJSON } from "../utils";
 import { paypal } from "../paypal";
 import { revalidatePath } from "next/cache";
 import { PAGE_SIZE } from "../constants";
-import { forbidden } from "next/navigation";
 
 
 export const placeOrder = async () => {
@@ -279,8 +278,6 @@ export const getOrdersOverviewData = async () => {
     if(session === null) throw new Error("User not found");
     const userId = session.user?.id;
     if(!userId) throw new Error("User not found");
-    const user = await prisma.user.findFirst({select: {id: true, role: true}, where: {id: userId}});
-    if(user?.role !== "admin") forbidden();
     const orderCount = await prisma.order.count();
     const productsCount = await prisma.product.count();
     const usersCount = await prisma.user.count({where: {role: "user"}});
