@@ -12,6 +12,7 @@ import { formatDateTime, formatOrderId } from "@/lib/utils";
 import { Metadata } from "next";
 import Link from "next/link";
 import React from "react";
+import Pagination from "./components/Pagination";
 
 export const metadata: Metadata = {
   title: "User Orders",
@@ -28,16 +29,18 @@ const page: React.FC<{
   });
   const orders = res.data;
   return (
-    <section className="flex flex-col space-y-2">
+    <section className="flex flex-col gap-4">
       <h2 className="h2-bold">Orders History</h2>
       <Table>
         <TableHeader>
-          <TableHead>Order ID</TableHead>
-          <TableHead>Created At</TableHead>
-          <TableHead>Total</TableHead>
-          <TableHead>Paid</TableHead>
-          <TableHead>Delivered</TableHead>
-          <TableHead>Actions</TableHead>
+          <TableRow>
+            <TableHead>Order ID</TableHead>
+            <TableHead>Created At</TableHead>
+            <TableHead>Total</TableHead>
+            <TableHead>Paid</TableHead>
+            <TableHead>Delivered</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
         </TableHeader>
         <TableBody>
           {orders?.orders.map((order) => (
@@ -64,6 +67,14 @@ const page: React.FC<{
           ))}
         </TableBody>
       </Table>
+      {res.data && res.data?.totalpages > 1 && (
+        <section className="flex justify-end mt-4">
+          <Pagination
+            page={Number(page || 1)}
+            totalPages={res.data.totalpages}
+          />
+        </section>
+      )}
     </section>
   );
 };
