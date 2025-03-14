@@ -14,6 +14,7 @@ import { BadgeDollarSign, Barcode, CreditCard, User2Icon } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import React from "react";
+import Chart from "./components/Chart";
 
 const OverviewPage = async () => {
   const session = await auth();
@@ -45,8 +46,17 @@ const OverviewPage = async () => {
           <OverviewCard key={item.title} {...item} />
         ))}
       </div>
-      <section className="grid grid-cols-4 lg:grid-cols-7">
-        <div className="col-span-4"> Cart Place Holder</div>
+      <section className="grid grid-cols-4 lg:grid-cols-7 gap-4 items-stretch">
+        <div className="col-span-4">
+          <Card>
+            <CardHeader>
+              <span className="text-sm font-medium">Sales</span>
+            </CardHeader>
+            <CardContent>
+              <Chart data={salesData} />
+            </CardContent>
+          </Card>
+        </div>
         <div className="col-span-4 lg:col-span-3">
           <Table>
             <TableHeader>

@@ -287,7 +287,7 @@ export const getOrdersOverviewData = async () => {
     const revenue = (await prisma.order.aggregate({_sum: {totalPrice: true}}))._sum.totalPrice; 
 
     // monthly sales
-    const monthlySales = await prisma.$queryRaw<Array<{month: number, total: number}>>`
+    const monthlySales = await prisma.$queryRaw<Array<{month: string, total: number}>>`
     SELECT to_char("createdAt", 'MM/YY') as month, SUM("totalPrice") as total FROM "Order" GROUP BY to_char("createdAt", 'MM/YY') 
     `;
 
