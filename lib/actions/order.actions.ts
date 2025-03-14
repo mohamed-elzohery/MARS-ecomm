@@ -11,6 +11,7 @@ import { transformToValidJSON } from "../utils";
 import { paypal } from "../paypal";
 import { revalidatePath } from "next/cache";
 import { PAGE_SIZE } from "../constants";
+import { forbidden } from "next/navigation";
 
 
 export const placeOrder = async () => {
@@ -264,6 +265,50 @@ export const getMyOrders = async ({page = 1 , limit=Number(PAGE_SIZE)}: {page: n
         success: true,
         data: {orders, count, totalpages: Math.ceil(count / limit)}
       }
+  }catch(error){
+    return {
+      success: false,
+      message: extractErrorMessage(error)
+  }
+}
+}
+
+export const getOrdersOverviewData = async () => {
+  try{
+    const session = await auth();
+    if(session === null) throw new Error("User not found");
+    const userId = session.user?.id;
+    if(!userId) throw new Error("User not found");
+    const user = await prisma.user.findFirst({select: {id: true, role: true}, where: {id: userId}});
+    if(user?.role !== "admin") forbidden();
+    const orderCount = await prisma.order.count();
+    const productsCount = await prisma.product.count();
+    const usersCount = await prisma.user.count({where: {role: "user"}});
+    const revenue = await prisma.order.aggregate({_sum: {totalPrice: true}}); 
+
+    // monthly sales
+    const monthlySales = await prisma.$queryRaw<Array<{month: number, total: number}>>`
+    SELECT to_char("createdAt", 'MM/YY') as month, SUM("totalPrice") as total FROM "Order" GROUP BY to_char("createdAt", 'MM/YY') 
+    `;
+
+    const salesData = monthlySales.map((item) => ({
+      month: item.month,
+      total: Number(item.total)
+    }));
+
+    // latest six sales
+    const latestSales = await prisma.order.findMany({
+      orderBy: {createdAt: "desc"},
+      take: 6,
+      include: {
+       user: {select: {name: true}}
+      }
+    });
+
+    return {
+        success: true,
+        data: {orderCount, productsCount, usersCount, revenue, salesData, latestSales}
+    }
   }catch(error){
     return {
       success: false,

@@ -9,10 +9,10 @@ import {
 import { signOutUser } from "@/lib/actions/user.actions";
 import Link from "next/link";
 
-import { User } from "next-auth";
+import { Session } from "next-auth";
 import React from "react";
 
-const UserButton: React.FC<{ user?: User }> = ({ user }) => {
+const UserButton: React.FC<{ user?: Session["user"] }> = ({ user }) => {
   const initial = user?.name?.[0];
 
   return (
@@ -30,6 +30,13 @@ const UserButton: React.FC<{ user?: User }> = ({ user }) => {
           <span className="text-sm font-medium ">{user?.name}</span>
           <span className="text-sm text-muted-foreground ">{user?.email}</span>
         </DropdownMenuLabel>
+        {user?.role === "admin" && (
+          <DropdownMenuItem>
+            <Link href="/admin/overview" className="flex-1">
+              Admin
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem>
           <Link href="/user/profile" className="flex-1">
             Profile
