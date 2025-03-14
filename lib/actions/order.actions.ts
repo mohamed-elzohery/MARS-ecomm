@@ -284,7 +284,7 @@ export const getOrdersOverviewData = async () => {
     const orderCount = await prisma.order.count();
     const productsCount = await prisma.product.count();
     const usersCount = await prisma.user.count({where: {role: "user"}});
-    const revenue = await prisma.order.aggregate({_sum: {totalPrice: true}}); 
+    const revenue = (await prisma.order.aggregate({_sum: {totalPrice: true}}))._sum.totalPrice; 
 
     // monthly sales
     const monthlySales = await prisma.$queryRaw<Array<{month: number, total: number}>>`
