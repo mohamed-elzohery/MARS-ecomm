@@ -11,6 +11,7 @@ import { transformToValidJSON } from "../utils";
 import { paypal } from "../paypal";
 import { revalidatePath } from "next/cache";
 import { PAGE_SIZE } from "../constants";
+import { requireAdmin } from "../auth-guard";
 
 
 export const placeOrder = async () => {
@@ -355,4 +356,55 @@ export const deleteOrderByID = async (orderID: string) => {
       message: extractErrorMessage(error)
     }
   }
+}
+
+export const markProductAsPaid = async (orderID: string) => {
+try {
+  await requireAdmin();
+  const order = await prisma.order.findFirst({
+    where: {id: orderID}
+  });
+  if(order === null) throw new Error("Order not found");
+  if(order.isPaid) throw new Error("Order is already paid");
+  await prisma.order.update({
+    where: {id: orderID},
+    data: {isPaid: true, paidAt: new Date()}
+  });
+  revalidatePath(`/orders/${orderID}`);
+  return {
+    success: true,
+    message: "Order marked as paid"
+  }
+} catch (error) {
+    return{
+      success: false,
+      message: extractErrorMessage(error)
+    }
+}  
+}
+
+export const markProductAsDelivered = async (orderID: string) => {
+try {
+  await requireAdmin();
+  const order = await prisma.order.findFirst({
+    where: {id: orderID}
+  });
+  if(order === null) throw new Error("Order not found");
+  if(!order.isPaid) throw new Error("Order must be paid to mark as delivered");
+  if(order.isDelivered) throw new Error("Order is already delivered");
+  await prisma.order.update({
+    where: {id: orderID},
+    data: {isDelivered: true, deliveredAt: new Date()}
+  });
+  revalidatePath(`/orders/${orderID}`);
+  return {
+    success: true,
+    message: "Order marked as paid"
+  }
+} catch (error) {
+    return{
+      success: false,
+      message: extractErrorMessage(error)
+    }
+}  
 }
