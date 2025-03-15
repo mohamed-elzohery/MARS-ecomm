@@ -1,4 +1,6 @@
 import Pagination from "@/app/user/orders/components/Pagination";
+import DeleteDialog from "@/components/shared/DeleteDialog/DeleteDialog";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -7,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getAllOrders } from "@/lib/actions/order.actions";
+import { deleteOrderByID, getAllOrders } from "@/lib/actions/order.actions";
 import { requireAdmin } from "@/lib/auth-guard";
 import { PAGE_SIZE } from "@/lib/constants";
 import { formatOrderId, formatDateTime } from "@/lib/utils";
@@ -63,10 +65,13 @@ const OrdersPage: React.FC<{
                   ? formatDateTime(order.deliveredAt).dateTime
                   : "Not Delivered"}
               </TableCell>
-              <TableCell>
-                <Link className="px-2" href={`/order/${order.id}`}>
-                  Details
-                </Link>
+              <TableCell className="flex flex-row gap-3">
+                <Button variant={"link"} asChild>
+                  <Link style={{ padding: 0 }} href={`/order/${order.id}`}>
+                    Details
+                  </Link>
+                </Button>
+                <DeleteDialog id={order.id} action={deleteOrderByID} />
               </TableCell>
             </TableRow>
           ))}

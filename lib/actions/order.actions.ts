@@ -336,4 +336,23 @@ export const  getAllOrders = async (page:number = 1, limit: number = Number(PAGE
       message: extractErrorMessage(error)
     }
   }
+};
+
+export const deleteOrderByID = async (orderID: string) => {
+  try {
+    await prisma.order.delete({
+      where: {id: orderID}
+    });
+
+    revalidatePath("/admin/orders");
+    return {
+      success: true,
+      message: "Order deleted successfully"
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: extractErrorMessage(error)
+    }
+  }
 }
