@@ -7,6 +7,7 @@ import { Product, ProductUpdatePayload } from "@/types";
 import { extractErrorMessage } from "../server-utils";
 import { revalidatePath } from "next/cache";
 import { productInsertionSchema } from "../validators";
+import { z } from "zod";
 
 export const getLatestProducts = async () => {
     const products:Product[] =  await prisma.product.findMany({
@@ -29,6 +30,7 @@ export const getProducts = async ({category, limit = Number(PAGE_SIZE), page, qu
 }) => {
     try {
         const products = await prisma.product.findMany({
+            orderBy: {createdAt: 'desc'},
             skip: (page - 1) * limit,
             take: limit,
         })
@@ -74,7 +76,7 @@ export const deleteProductByID = async (id: string) => {
     }
 }
 
-export const createProduct = async (product: Product) => {
+export const createProduct = async (product: z.infer<typeof productInsertionSchema>) => {
     try {
 
         const productData = productInsertionSchema.parse(product);
@@ -86,7 +88,7 @@ export const createProduct = async (product: Product) => {
         revalidatePath("/admin/products");
         return {
             success: true,
-            data: "product created successfully"
+            message: "product created successfully"
         }
     }
     catch (error) {
@@ -110,7 +112,7 @@ export const updateProduct = async (product: ProductUpdatePayload) => {
         revalidatePath("/admin/products");
         return {
             success: true,
-            data: "product updated successfully"
+            message: "product updated successfully"
         }
     }
     catch (error) {

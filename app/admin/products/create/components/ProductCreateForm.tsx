@@ -11,13 +11,17 @@ import { Input } from "@/components/ui/input";
 import { productInsertionSchema } from "@/lib/validators";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
-import { ControllerRenderProps, useForm } from "react-hook-form";
+import { ControllerRenderProps, SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
 import slugify from "slugify";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { createProduct } from "@/lib/actions/products.actions";
+import { toast } from "sonner";
 
 const ProductCreateForm = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof productInsertionSchema>>({
     resolver: zodResolver(productInsertionSchema),
     defaultValues: {
@@ -27,19 +31,24 @@ const ProductCreateForm = () => {
       brand: "",
       description: "",
       stock: 0,
-      images: [],
-      isFeatured: false,
-      banner: null,
+      //   images: [],
+      //   isFeatured: false,
+      //   banner: null,
       price: "",
     },
   });
+
+  const handleSubmit: SubmitHandler<
+    z.infer<typeof productInsertionSchema>
+  > = async (values) => {
+    const res = await createProduct(values);
+    if (!res.success) return toast.error(res.message);
+    toast.success(res.message);
+    router.push("/admin/products");
+  };
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit((data) => {
-          console.log(data);
-        })}
-      >
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
         <div className="grid md:grid-cols-2 gap-4">
           <FormField
             control={form.control}
