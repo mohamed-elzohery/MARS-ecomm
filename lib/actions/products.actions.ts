@@ -3,9 +3,10 @@
 import { prisma } from "@/db/prisma";
 import { LATEST_PRODUCTS_LIMIT, PAGE_SIZE } from "../constants";   
 import { transformToValidJSON } from "../utils";
-import { Product } from "@/types";
+import { Product, ProductUpdatePayload } from "@/types";
 import { extractErrorMessage } from "../server-utils";
 import { revalidatePath } from "next/cache";
+import { productInsertionSchema } from "../validators";
 
 export const getLatestProducts = async () => {
     const products:Product[] =  await prisma.product.findMany({
@@ -63,6 +64,53 @@ export const deleteProductByID = async (id: string) => {
         return {
             success: true,
             message: "Product deleted successfully"
+        }
+    }
+    catch (error) {
+        return {
+            success: false,
+            message: extractErrorMessage(error)
+        }
+    }
+}
+
+export const createProduct = async (product: Product) => {
+    try {
+
+        const productData = productInsertionSchema.parse(product);
+        await prisma.product.create({
+            data: productData
+        });
+
+        // To Be Implemented: revalidate the other paths that need the product list
+        revalidatePath("/admin/products");
+        return {
+            success: true,
+            data: "product created successfully"
+        }
+    }
+    catch (error) {
+        return {
+            success: false,
+            message: extractErrorMessage(error)
+        }
+    }
+}
+
+export const updateProduct = async (product: ProductUpdatePayload) => {
+    try {
+
+        const productData = productInsertionSchema.parse(product);
+        await prisma.product.update({
+            where: {id: product.id},
+            data: productData
+        })
+
+        // To Be Implemented: revalidate the other paths that need the product list
+        revalidatePath("/admin/products");
+        return {
+            success: true,
+            data: "product updated successfully"
         }
     }
     catch (error) {
