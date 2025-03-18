@@ -2,6 +2,7 @@
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -23,6 +24,7 @@ import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { X } from "lucide-react";
 import { UploadDropzone } from "@/lib/uploadthing";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const ProductCreateForm = () => {
   const router = useRouter();
@@ -36,8 +38,8 @@ const ProductCreateForm = () => {
       description: "",
       stock: 0,
       images: [],
-      //   isFeatured: false,
-      //   banner: null,
+      isFeatured: false,
+      banner: null,
       price: "",
     },
   });
@@ -185,7 +187,6 @@ const ProductCreateForm = () => {
           />
           {/* Existing form fields */}
           {/* ...existing code... */}
-
           {/* New images field */}
           <FormField
             control={form.control}
@@ -308,6 +309,109 @@ const ProductCreateForm = () => {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name="isFeatured"
+            render={({ field }) => (
+              <FormItem className="col-span-2 flex flex-row items-start space-x-3 space-y-0 mt-2">
+                <FormControl>
+                  <Checkbox
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
+                <div className="space-y-1 leading-none">
+                  <FormLabel>Featured Product</FormLabel>
+                  <p className="text-sm text-muted-foreground">
+                    Display this product in the featured section on the homepage
+                  </p>
+                </div>
+              </FormItem>
+            )}
+          />
+          {form.watch("isFeatured") && (
+            <FormField
+              control={form.control}
+              name="banner"
+              render={({ field }) => (
+                <FormItem className="col-span-2">
+                  <FormLabel>Banner Image</FormLabel>
+                  <FormDescription>
+                    Add a banner image for the featured product (landscape
+                    orientation recommended)
+                  </FormDescription>
+                  <FormControl>
+                    <div className="space-y-4">
+                      {!field.value ? (
+                        <UploadDropzone
+                          endpoint="bannerUploader"
+                          onClientUploadComplete={(res) => {
+                            if (res.length > 0) {
+                              // Take only the first image for banner
+                              field.onChange(res[0].url);
+                              toast.success("Banner uploaded successfully");
+                            }
+                          }}
+                          onUploadError={(error: Error) => {
+                            const errorMessage =
+                              error.message || "Banner upload failed";
+                            console.error("Banner upload error:", errorMessage);
+                            toast.error(
+                              `Banner upload failed: ${errorMessage}`
+                            );
+                          }}
+                          onUploadBegin={() => {
+                            toast.info("Uploading banner...");
+                          }}
+                          appearance={{
+                            uploadIcon: { width: "2rem", height: "2rem" },
+                            label: { color: "gray" },
+                            allowedContent: {
+                              display: "block",
+                              color: "gray",
+                              fontSize: "0.8rem",
+                            },
+                          }}
+                          content={{
+                            label: "Upload banner image",
+                            allowedContent:
+                              "Single image: JPG, PNG, or WebP up to 4MB",
+                          }}
+                          // Add these two configuration options for auto-upload
+                          config={{
+                            mode: "auto", // Enable auto-upload
+                          }}
+                          className="p-8 border-dashed ut-allowed-content:text-sm ut-upload-icon:h-16 ut-upload-icon:w-16"
+                        />
+                      ) : (
+                        <div className="relative aspect-[21/9] rounded-md overflow-hidden border">
+                          <Image
+                            src={field.value}
+                            alt="Product banner"
+                            fill
+                            className="object-cover"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-2 right-2 h-8 w-8"
+                            onClick={() => {
+                              field.onChange(null);
+                            }}
+                          >
+                            <X size={16} />
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
           <Button
             className="col-span-2 justify-self-end justify-end mt-3"
             disabled={form.formState.isSubmitting}

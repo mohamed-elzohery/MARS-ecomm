@@ -33,6 +33,33 @@ export const ourFileRouter = {
       };
     }),
   
+  // New banner uploader that only accepts a single file
+  bannerUploader: f({
+    image: {
+      maxFileSize: "8MB",
+      maxFileCount: 1,
+      contentDisposition: "inline",
+    },
+  })
+    .middleware(async () => {
+      const session = await auth();
+      if (!session) throw new UploadThingError("Unauthorized access. Please log in.");
+      return { userId: session.user.id };
+    })
+    .onUploadError(({error}) => {
+      console.log("Banner upload error", error);
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Banner upload complete for:", file.name);
+      console.log("Uploaded by user ID:", metadata.userId);
+      
+      return {
+        uploadedBy: metadata.userId,
+        fileName: file.name,
+        fileUrl: file.url
+      };
+    }),
+  
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;
