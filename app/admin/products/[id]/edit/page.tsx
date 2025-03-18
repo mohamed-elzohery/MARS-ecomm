@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import React from "react";
 import ProductUpdateForm from "./components/ProductUpdateForm";
+import { requireAdmin } from "@/lib/auth-guard";
 
 export const metadata: Metadata = {
   title: "Update Product",
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 const ProductUpdatePage: React.FC<{
   params: Promise<{ id: string }>;
 }> = async ({ params }) => {
+  await requireAdmin();
   const paramsData = await params;
   if (!paramsData.id) notFound();
   const product = await getProductByID(paramsData.id);

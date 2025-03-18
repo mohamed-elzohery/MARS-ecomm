@@ -8,6 +8,7 @@ import { prisma } from "@/db/prisma";
 import { PaymentMethod, ShippingAddress, UpdateUserData } from "@/types";
 import { redirect } from "next/navigation";
 import { extractErrorMessage } from "../server-utils";
+import { PAGE_SIZE } from "../constants";
 
 export const signInEmail =async (prevState: unknown, formData: FormData) => {
     try {
@@ -124,4 +125,47 @@ export const updateProfile = async (data: UpdateUserData) => {
     }
 }
 
+export const getAllUsers = async ({page = 1, limit = Number(PAGE_SIZE)}) => {
+    try {
+        const users = await prisma.user.findMany({
+            orderBy: {createdAt: 'desc'},
+            skip: (page - 1) * limit,
+            take: limit,
+        });
+
+        const totalUsersCount = await prisma.user.count();
+
+        return {
+            success: true,
+            data: {
+                users, totalPages: Math.ceil(totalUsersCount / limit)
+            }
+        }
+    } catch (error) {
+        return {
+            success: false,
+            message: extractErrorMessage(error)
+        }
+        
+    }
+} 
+
+
+export const deleteUserByID = async (id: string) => {
+    try {
+        await prisma.user.delete({
+            where: {id}
+        });
+        return {
+            success: true,
+            message: 'User deleted successfully'
+        }
+    } catch (error) {
+        return {
+            success: false,
+            message: extractErrorMessage(error)
+        }
+        
+    }
+} 
 
