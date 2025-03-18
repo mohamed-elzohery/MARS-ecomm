@@ -10,7 +10,9 @@ const ProductPrice: React.FC<{ value: string; className?: string }> = ({
     <span className={cn("text-2xl", className)}>
       <span className="text-xs align-super">$</span>
       {intVal}
-      <span className="text-xs align-super">.{floatVal.padEnd(2, "0")}</span>
+      <span className="text-xs align-super">
+        .{floatVal || "".padEnd(2, "0")}
+      </span>
     </span>
   );
 };
