@@ -20,6 +20,25 @@ export const getLatestProducts = async () => {
     return transformToValidJSON(products);
 }
 
+export const getAllCategories = async () => {
+    try {
+        const data = prisma.product.groupBy({
+        by: ['category'],
+        _count: true
+    });
+    return {
+        success: true,
+        data
+    }
+    } catch (error) {
+        return {
+            success: false,
+            message: extractErrorMessage(error)
+        }
+    }
+
+}
+
 export const getProductBySlug = async (slug: string) => {
     return prisma.product.findFirst({
         where: {slug}
