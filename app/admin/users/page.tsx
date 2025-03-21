@@ -15,6 +15,7 @@ import { formatOrderId } from "@/lib/utils";
 import DeleteDialog from "@/components/shared/DeleteDialog/DeleteDialog";
 import Pagination from "@/app/user/orders/components/Pagination";
 import { deleteUserByID, getAllUsers } from "@/lib/actions/user.actions";
+import FilterBox from "../components/FilterBox";
 
 export const metadata: Metadata = {
   title: "Admin Users",
@@ -28,9 +29,9 @@ const AdminUserPage = async (props: {
 }) => {
   await requireAdmin();
 
-  const { page = "1" } = await props.searchParams;
+  const { page = "1", query } = await props.searchParams;
 
-  const users = await getAllUsers({ page: Number(page) });
+  const users = await getAllUsers({ page: Number(page), query });
   if (users.success === false) {
     return <div>{users.message}</div>;
   }
@@ -39,6 +40,8 @@ const AdminUserPage = async (props: {
       <div className="flex items-center gap-3">
         <h1 className="h2-bold">Users</h1>
       </div>
+      <FilterBox link="/admin/users" />
+
       <div className="overflow-x-auto">
         <Table>
           <TableHeader>

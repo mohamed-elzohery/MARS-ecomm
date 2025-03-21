@@ -8,6 +8,7 @@ import { extractErrorMessage } from "../server-utils";
 import { revalidatePath } from "next/cache";
 import { productInsertionSchema } from "../validators";
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 
 export const getLatestProducts = async () => {
     const products:Product[] =  await prisma.product.findMany({
@@ -31,11 +32,21 @@ export const getProductByID = async (id: string) => {
     });
 };
 
-export const getProducts = async ({limit = Number(PAGE_SIZE), page}:{
-    page: number, query: string, limit: number, category: string
+export const getProducts = async ({limit = Number(PAGE_SIZE), page, query}:{
+    page: number, query?: string, limit?: number, category: string
 }) => {
     try {
+        const queryFilter: Prisma.ProductWhereInput =
+            query && query !== 'all'
+              ? {
+                  name: {
+                    contains: query,
+                    mode: 'insensitive',
+                  } as Prisma.StringFilter,
+                }
+              : {};
         const products = await prisma.product.findMany({
+            where: {...queryFilter},
             orderBy: {createdAt: 'desc'},
             skip: (page - 1) * limit,
             take: limit,

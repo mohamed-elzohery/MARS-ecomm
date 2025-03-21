@@ -15,15 +15,17 @@ import { PAGE_SIZE } from "@/lib/constants";
 import { formatOrderId, formatDateTime } from "@/lib/utils";
 import Link from "next/link";
 import React from "react";
+import FilterBox from "../components/FilterBox";
 
 const OrdersPage: React.FC<{
-  searchParams: Promise<{ page: string; limit: string }>;
+  searchParams: Promise<{ page: string; limit: string; query?: string }>;
 }> = async ({ searchParams }) => {
   await requireAdmin();
   const params = await searchParams;
   // Validate page parameter
   const pageParam = params.page;
   const pageNumber = pageParam ? parseInt(pageParam, 10) : NaN;
+  const query = params.query;
   const validatedPage = !isNaN(pageNumber) && pageNumber > 0 ? pageNumber : 1;
 
   // Validate limit parameter
@@ -32,17 +34,23 @@ const OrdersPage: React.FC<{
   const validatedLimit =
     !isNaN(limitNumber) && limitNumber > 0 ? limitNumber : Number(PAGE_SIZE);
 
-  const response = await getAllOrders(validatedPage, validatedLimit);
+  const response = await getAllOrders({
+    page: validatedPage,
+    limit: validatedLimit,
+    query,
+  });
   const orders = response.data;
   const total = response.totalPages;
   return (
     <section className="flex flex-col gap-4">
       <h2 className="h2-bold">Orders History</h2>
+      <FilterBox link="/admin/orders" />
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>Order ID</TableHead>
             <TableHead>Created At</TableHead>
+            <TableHead>Buyer</TableHead>
             <TableHead>Total</TableHead>
             <TableHead>Paid</TableHead>
             <TableHead>Delivered</TableHead>
@@ -54,6 +62,7 @@ const OrdersPage: React.FC<{
             <TableRow key={order.id}>
               <TableCell>{formatOrderId(order.id)}</TableCell>
               <TableCell>{formatDateTime(order.createdAt).dateTime}</TableCell>
+              <TableCell>{order.user.name}</TableCell>
               <TableCell>{order.totalPrice}</TableCell>
               <TableCell>
                 {order.paidAt

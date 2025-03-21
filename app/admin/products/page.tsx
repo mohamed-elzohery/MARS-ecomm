@@ -14,6 +14,7 @@ import { PAGE_SIZE } from "@/lib/constants";
 import { formatOrderId, round2 } from "@/lib/utils";
 import Link from "next/link";
 import React from "react";
+import FilterBox from "../components/FilterBox";
 
 const ProductsDashboard: React.FC<{
   searchParams: Promise<{
@@ -43,6 +44,7 @@ const ProductsDashboard: React.FC<{
           <Link href="/admin/products/create">Create Ptoduct</Link>
         </Button>
       </div>
+      <FilterBox link="/admin/products" />
       <Table>
         <TableHeader>
           <TableRow>

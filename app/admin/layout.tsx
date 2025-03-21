@@ -5,13 +5,13 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
 import AdminNav from "./AdminNavMenu";
-import { Input } from "@/components/ui/input";
+import AdminSearch from "./components/AdminSearch";
 
 export const metadata: Metadata = {
-  title: "User",
+  title: "Admin",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -25,11 +25,7 @@ export default function RootLayout({
             <AdminNav />
           </div>
           <div className="flex items-center gap-6">
-            <Input
-              className="md:w-[100px] lg:w-[300px] md:block hidden"
-              type="search"
-              placeholder="Search..."
-            />
+            <AdminSearch />
             <Menu />
           </div>
         </Header>

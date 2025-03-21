@@ -10,6 +10,7 @@ import { redirect } from "next/navigation";
 import { extractErrorMessage } from "../server-utils";
 import { PAGE_SIZE } from "../constants";
 import { revalidatePath } from "next/cache";
+import { Prisma } from "@prisma/client";
 
 export const signInEmail =async (prevState: unknown, formData: FormData) => {
     try {
@@ -126,9 +127,19 @@ export const updateProfile = async (data: UpdateUserData) => {
     }
 }
 
-export const getAllUsers = async ({page = 1, limit = Number(PAGE_SIZE)}) => {
+export const getAllUsers = async ({page = 1, limit = Number(PAGE_SIZE), query}: {query?: string, page: number, limit?: number}) => {
     try {
+        const queryFilter: Prisma.UserWhereInput =
+    query && query !== 'all'
+      ? {
+          name: {
+            contains: query,
+            mode: 'insensitive',
+          } as Prisma.StringFilter,
+        }
+      : {};
         const users = await prisma.user.findMany({
+            where: {...queryFilter},
             orderBy: {createdAt: 'desc'},
             skip: (page - 1) * limit,
             take: limit,
