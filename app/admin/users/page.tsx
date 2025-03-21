@@ -65,7 +65,7 @@ const AdminUserPage = async (props: {
                 </TableCell>
                 <TableCell className="flex items-center gap-3">
                   <Button asChild variant="outline">
-                    <Link href={`/admin/users/${user.id}`}>Edit</Link>
+                    <Link href={`/admin/users/${user.id}/edit`}>Edit</Link>
                   </Button>
                   <DeleteDialog id={user.id} action={deleteUserByID} />
                 </TableCell>

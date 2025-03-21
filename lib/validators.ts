@@ -105,5 +105,10 @@ export const updateUserSchema = z.object({
   email: z.string().email('Invalid email address'),
 })
 
+export const updateAdminSchema = updateUserSchema.extend({
+  id: z.string().min(1, 'User ID is required'),
+  role: z.string().min(1, 'Role is required'),
+});
+
 
 

@@ -14,7 +14,7 @@ export const ourFileRouter = {
       contentDisposition: "inline",
     },
   })
-    .middleware(async ({req}) => {
+    .middleware(async () => {
       const session = await auth();
       if (!session) throw new UploadThingError("Unauthorized access. Please log in.");
       return { userId: session.user.id };
