@@ -1,5 +1,6 @@
 import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
+import CategoryDrawer from "@/components/shared/Header/CategoryDrawer";
 import LogoBox from "@/components/shared/Header/LogoBox";
 import Menu from "@/components/shared/Header/Menu";
 import type { Metadata } from "next";
@@ -19,7 +20,10 @@ export default function RootLayout({
     <div className="flex flex-col h-screen">
       <ThemeProvider attribute="class" disableTransitionOnChange={true}>
         <Header>
-          <LogoBox />
+          <div className="flex gap-3 items-center justify-between">
+            <CategoryDrawer />
+            <LogoBox />
+          </div>
           <Menu />
         </Header>
         <main className="wrapper flex-1">{children}</main>

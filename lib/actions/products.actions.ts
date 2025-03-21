@@ -22,7 +22,7 @@ export const getLatestProducts = async () => {
 
 export const getAllCategories = async () => {
     try {
-        const data = prisma.product.groupBy({
+        const data = await prisma.product.groupBy({
         by: ['category'],
         _count: true
     });
