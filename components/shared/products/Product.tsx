@@ -14,7 +14,10 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   return (
     <Card className="flex flex-col">
       <CardHeader>
-        <Link href={`/products/${data.slug}`}>
+        <Link
+          href={`/products/${data.slug}`}
+          className="flex justify-center items-center"
+        >
           <Image
             src={data.images[0]}
             width={300}

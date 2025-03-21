@@ -5,6 +5,7 @@ import {
 } from "@/lib/actions/products.actions";
 import React from "react";
 import FeaturedCarousel from "./products/[slug]/components/FeaturedCarousel";
+import ShowAllProductsButton from "@/components/shared/products/ShowAllProductsButton";
 
 const HomePage = async () => {
   const products = await getLatestProducts();
@@ -18,6 +19,9 @@ const HomePage = async () => {
         products={products}
         limit={10}
       />
+      <div className="flex justify-center">
+        <ShowAllProductsButton />
+      </div>
     </div>
   );
 };

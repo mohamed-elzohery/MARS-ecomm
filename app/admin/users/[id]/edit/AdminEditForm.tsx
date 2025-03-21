@@ -39,7 +39,6 @@ const AdminEditForm: React.FC<{
     },
     resolver: zodResolver(updateAdminSchema.omit({ id: true })),
   });
-  console.log(form.formState.errors);
   const handleFormSubmit = async (values: Omit<UpdateAdminData, "id">) => {
     const res = await updateAdminUser({ ...values, id: user.id });
     if (!res.success) {

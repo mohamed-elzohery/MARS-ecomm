@@ -20,7 +20,7 @@ const SearchProducts = async () => {
           <SelectValue placeholder="All" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="All">All</SelectItem>
+          <SelectItem value="all">All</SelectItem>
           {categories?.map((category) => (
             <SelectItem key={category.category} value={category.category}>
               {category.category}

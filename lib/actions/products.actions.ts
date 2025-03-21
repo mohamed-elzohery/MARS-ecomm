@@ -74,8 +74,8 @@ export const getProductByID = async (id: string) => {
     });
 };
 
-export const getProducts = async ({limit = Number(PAGE_SIZE), page, query}:{
-    page: number, query?: string, limit?: number, category: string
+export const getProducts = async ({limit = Number(PAGE_SIZE), page = 1, query, category, price, rating}:{
+    page: number, query?: string, limit?: number, category: string, sort?: string, price?: string, rating?: string
 }) => {
     try {
         const queryFilter: Prisma.ProductWhereInput =
@@ -87,8 +87,31 @@ export const getProducts = async ({limit = Number(PAGE_SIZE), page, query}:{
                   } as Prisma.StringFilter,
                 }
               : {};
+               const categoryFilter: Prisma.ProductWhereInput =
+            category && category !== 'all'
+              ? {
+                  category
+                }
+              : {};
+
+                             const priceFilter: Prisma.ProductWhereInput =
+            price && price !== 'all'
+              ? {
+                  price: {
+                    gte: Number(price.split('-')[0]),
+                    lte: Number(price.split('-')[1]),
+                  }
+                }
+              : {};
+
+        const ratingFilter: Prisma.ProductWhereInput =
+            rating && rating !== 'all'
+              ? {
+                  rating: Number(rating)
+                }
+              : {};
         const products = await prisma.product.findMany({
-            where: {...queryFilter},
+            where: {...queryFilter, ...categoryFilter, ...priceFilter}, ...ratingFilter,
             orderBy: {createdAt: 'desc'},
             skip: (page - 1) * limit,
             take: limit,

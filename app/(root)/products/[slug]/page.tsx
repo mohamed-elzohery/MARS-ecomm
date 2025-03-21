@@ -1,4 +1,3 @@
-import NotFoundPage from "@/app/not-found";
 import AddToCartBtn from "@/components/shared/products/AddToCartBtn";
 import ProductImage from "@/components/shared/products/ProductImage";
 import ProductPrice from "@/components/shared/products/ProductPrice";
