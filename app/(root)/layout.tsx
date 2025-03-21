@@ -3,6 +3,7 @@ import Header from "@/components/shared/Header";
 import CategoryDrawer from "@/components/shared/Header/CategoryDrawer";
 import LogoBox from "@/components/shared/Header/LogoBox";
 import Menu from "@/components/shared/Header/Menu";
+import SearchProducts from "@/components/shared/Header/SearchProducts";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "sonner";
@@ -24,6 +25,7 @@ export default function RootLayout({
             <CategoryDrawer />
             <LogoBox />
           </div>
+          <SearchProducts />
           <Menu />
         </Header>
         <main className="wrapper flex-1">{children}</main>
