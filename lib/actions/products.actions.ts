@@ -45,8 +45,31 @@ export const getProductBySlug = async (slug: string) => {
     });
 };
 
+export const getFeaturedProducts = async () => {
+    try {
+        const featuredProducts = await prisma.product.findMany({
+            where: {
+                isFeatured: true
+            },  
+            take: 5,
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+        return {
+            success: true,
+            data: transformToValidJSON(featuredProducts)
+        }
+    } catch (error) {
+        return {
+            success: false,
+            message: extractErrorMessage(error)
+        }
+    }
+}
+
 export const getProductByID = async (id: string) => {
-    return prisma.product.findFirst({
+    return await prisma.product.findFirst({
         where: {id}
     });
 };

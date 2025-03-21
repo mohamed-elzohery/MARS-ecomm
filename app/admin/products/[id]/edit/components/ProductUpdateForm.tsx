@@ -38,8 +38,9 @@ const ProductUpdateForm: React.FC<{ product: Product }> = ({ product }) => {
     z.infer<typeof productInsertionSchema>
   > = async (values) => {
     const res = await updateProduct({ ...product, ...values });
-    if (!res.success) return toast.error(res.message);
-    toast.success(res.message);
+    if (!res.success)
+      return toast.error(res.message, { position: "bottom-left" });
+    toast.success(res.message, { position: "bottom-left" });
     router.push("/admin/products");
   };
   return (
@@ -190,7 +191,9 @@ const ProductUpdateForm: React.FC<{ product: Product }> = ({ product }) => {
                       onClientUploadComplete={(res) => {
                         // Update form with new image URLs
                         if (res.length === 0)
-                          toast.error(`Failed uploading images`);
+                          toast.error(`Failed uploading images`, {
+                            position: "bottom-left",
+                          });
                         else {
                           const newImages = [
                             ...field.value,
@@ -198,7 +201,8 @@ const ProductUpdateForm: React.FC<{ product: Product }> = ({ product }) => {
                           ];
                           field.onChange(newImages);
                           toast.success(
-                            `Uploaded ${res.length} image(s) successfully`
+                            `Uploaded ${res.length} image(s) successfully`,
+                            { position: "bottom-left" }
                           );
                         }
                       }}
@@ -211,7 +215,9 @@ const ProductUpdateForm: React.FC<{ product: Product }> = ({ product }) => {
                       }}
                       onUploadBegin={() => {
                         // Show loading state when upload starts
-                        toast.info("Upload starting...");
+                        toast.info("Upload starting...", {
+                          position: "bottom-left",
+                        });
                       }}
                       appearance={{
                         uploadIcon: { width: "2rem", height: "2rem" },
@@ -338,7 +344,9 @@ const ProductUpdateForm: React.FC<{ product: Product }> = ({ product }) => {
                             if (res.length > 0) {
                               // Take only the first image for banner
                               field.onChange(res[0].url);
-                              toast.success("Banner uploaded successfully");
+                              toast.success("Banner uploaded successfully", {
+                                position: "bottom-left",
+                              });
                             }
                           }}
                           onUploadError={(error: Error) => {
@@ -350,7 +358,9 @@ const ProductUpdateForm: React.FC<{ product: Product }> = ({ product }) => {
                             );
                           }}
                           onUploadBegin={() => {
-                            toast.info("Uploading banner...");
+                            toast.info("Uploading banner...", {
+                              position: "bottom-left",
+                            });
                           }}
                           appearance={{
                             uploadIcon: { width: "2rem", height: "2rem" },

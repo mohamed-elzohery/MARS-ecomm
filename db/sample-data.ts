@@ -33,7 +33,6 @@ export const generateFakeData = async () => {
       numReviews: 10,
       stock: 5,
       isFeatured: true,
-      banner: 'banner-1.jpg',
     },
     {
       name: 'Brooks Brothers Long Sleeved Shirt',
@@ -50,7 +49,6 @@ export const generateFakeData = async () => {
       numReviews: 8,
       stock: 10,
       isFeatured: true,
-      banner: 'banner-2.jpg',
     },
     {
       name: 'Tommy Hilfiger Classic Fit Dress Shirt',
@@ -67,7 +65,6 @@ export const generateFakeData = async () => {
       numReviews: 3,
       stock: 0,
       isFeatured: false,
-      banner: null,
     },
     {
       name: 'Calvin Klein Slim Fit Stretch Shirt',
@@ -84,7 +81,6 @@ export const generateFakeData = async () => {
       numReviews: 5,
       stock: 10,
       isFeatured: false,
-      banner: null,
     },
     {
       name: 'Polo Ralph Lauren Oxford Shirt',
@@ -101,7 +97,6 @@ export const generateFakeData = async () => {
       numReviews: 18,
       stock: 6,
       isFeatured: false,
-      banner: null,
     },
     {
       name: 'Polo Classic Pink Hoodie',
@@ -118,7 +113,6 @@ export const generateFakeData = async () => {
       numReviews: 12,
       stock: 8,
       isFeatured: true,
-      banner: null,
     },
   ],
 };

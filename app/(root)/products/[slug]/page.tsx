@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { getCartItems } from "@/lib/actions/cart.actions";
 import { getProductBySlug } from "@/lib/actions/products.actions";
 import { Cart } from "@/types";
+import { notFound } from "next/navigation";
 import React from "react";
 
 const ProductDetialsPage: React.FC<{
@@ -15,7 +16,7 @@ const ProductDetialsPage: React.FC<{
   const { slug } = await params;
   const cart = (await getCartItems()) as Cart;
   const product = await getProductBySlug(slug);
-  if (!product) return <NotFoundPage />;
+  if (!product) notFound();
   const {
     name,
     id,
