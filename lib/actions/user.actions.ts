@@ -5,7 +5,7 @@ import { paymentMethodSchema, shippingAddressSchema, signInEmailSchema, signUpEm
 import { auth, signIn, signOut } from "@/auth";
 import { hashSync } from "bcrypt-ts-edge";
 import { prisma } from "@/db/prisma";
-import { PaymentMethod, ShippingAddress, UpdateUserData } from "@/types";
+import { PaymentMethod, ShippingAddress, UpdateAdminData, UpdateUserData } from "@/types";
 import { redirect } from "next/navigation";
 import { extractErrorMessage } from "../server-utils";
 import { PAGE_SIZE } from "../constants";
@@ -171,4 +171,23 @@ export const deleteUserByID = async (id: string) => {
         
     }
 } 
+
+export const updateAdminUser = async ( data: UpdateAdminData) => {
+    try {
+        await prisma.user.update({
+            where: {id: data.id},
+            data
+        })
+        // revalidatePath("/admin/users");
+        return {
+            success: true,
+            message: 'User updated successfully'
+        }
+    } catch (error) {
+        return {
+            success: false,
+            message: extractErrorMessage(error)
+        }
+    }
+}
 
