@@ -21,7 +21,6 @@ const SignInPage: React.FC<{
 }> = async ({ searchParams }) => {
   const session = await auth();
   const callBackUrl = (await searchParams).callbackUrl;
-  console.log("callBackUrl", callBackUrl);
   if (session) redirect(callBackUrl || "/");
   return (
     <Card className="min-w-96 flex flex-col justify-center items-center">

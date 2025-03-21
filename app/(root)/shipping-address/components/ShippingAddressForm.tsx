@@ -46,7 +46,6 @@ const ShippingAddressForm: React.FC<{ address: ShippingAddress }> = ({
       else router.push("/payment");
     });
   };
-  console.log("Form errors:", form.formState.errors);
   return (
     <Form {...form}>
       <form

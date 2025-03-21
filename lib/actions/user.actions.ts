@@ -9,6 +9,7 @@ import { PaymentMethod, ShippingAddress, UpdateUserData } from "@/types";
 import { redirect } from "next/navigation";
 import { extractErrorMessage } from "../server-utils";
 import { PAGE_SIZE } from "../constants";
+import { revalidatePath } from "next/cache";
 
 export const signInEmail =async (prevState: unknown, formData: FormData) => {
     try {
@@ -156,10 +157,12 @@ export const deleteUserByID = async (id: string) => {
         await prisma.user.delete({
             where: {id}
         });
+        revalidatePath("/admin/users");
         return {
             success: true,
             message: 'User deleted successfully'
-        }
+        };
+
     } catch (error) {
         return {
             success: false,

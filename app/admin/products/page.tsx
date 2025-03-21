@@ -35,7 +35,6 @@ const ProductsDashboard: React.FC<{
     query,
   });
 
-  console.log(response);
   return (
     <section className="flex flex-col gap-4">
       <div className="flex justify-between items-center">

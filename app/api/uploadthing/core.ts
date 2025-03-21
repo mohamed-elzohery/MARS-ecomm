@@ -17,14 +17,11 @@ export const ourFileRouter = {
     .middleware(async ({req}) => {
       const session = await auth();
       if (!session) throw new UploadThingError("Unauthorized access. Please log in.");
-      console.log(req)
       return { userId: session.user.id };
     }).onUploadError(({error}) => {
       console.log("Upload error",  error);
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Upload complete for:", file.name);
-      console.log("Uploaded by user ID:", metadata.userId);
       
       return { 
         uploadedBy: metadata.userId,
@@ -50,9 +47,6 @@ export const ourFileRouter = {
       console.log("Banner upload error", error);
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      console.log("Banner upload complete for:", file.name);
-      console.log("Uploaded by user ID:", metadata.userId);
-      
       return {
         uploadedBy: metadata.userId,
         fileName: file.name,

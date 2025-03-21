@@ -37,7 +37,6 @@ export const addItemToCart = async (cartItem: CartItem) => {
         if(itemInCart){
             if(product.stock < itemInCart.qty + 1) throw new Error("Not enough stock.");
             itemInCart.qty = itemInCart.qty + 1;
-            console.log(cart.items)
         }else{
             if(product.stock < 1)throw new Error("Not enough stock.");
             cart.items.push(cartItem);

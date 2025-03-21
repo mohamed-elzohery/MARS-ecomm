@@ -44,7 +44,6 @@ const ProductCreateForm = () => {
     },
   });
 
-  console.log("form", form.formState.errors);
   const handleSubmit: SubmitHandler<
     z.infer<typeof productInsertionSchema>
   > = async (values) => {

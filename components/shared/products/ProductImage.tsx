@@ -9,7 +9,6 @@ const ProductImage: React.FC<{ images: Product["images"] }> = ({ images }) => {
 
   const handleClick = (index: number) => {
     setCurrent(index);
-    console.log(index);
   };
 
   return (
