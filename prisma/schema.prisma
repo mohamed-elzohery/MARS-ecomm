@@ -30,6 +30,7 @@ model Product {
   banner      String?
   createdAt   DateTime    @default(now()) @db.Timestamp(6)
   orderItems  OrderItem[]
+  reviews     Review[]
 }
 
 model User {
@@ -48,6 +49,7 @@ model User {
   session       Session[]
   cart          Cart[]
   order         Order[]
+  reviews       Review[]
 }
 
 model Account {
@@ -130,4 +132,18 @@ model OrderItem {
   product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@id([orderId, productId], map: "orderitems_orderId_productId_pk")
+}
+
+model Review {
+  id                String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId            String   @db.Uuid
+  productId         String   @db.Uuid
+  rating            Int
+  title             String
+  description       String
+  isVerfiedPurchase Boolean  @default(false)
+  createdAt         DateTime @default(now()) @db.Timestamp(6)
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product           Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
