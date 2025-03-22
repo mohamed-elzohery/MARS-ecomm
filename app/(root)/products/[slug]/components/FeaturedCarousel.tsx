@@ -53,8 +53,8 @@ const FeaturedCarousel: React.FC<{ products: Product[] }> = ({
           </CarouselItem>
         ))}
       </CarouselContent>
-      <CarouselPrevious className="hidden md:flex left-4" />
-      <CarouselNext className="hidden md:flex right-4" />
+      <CarouselPrevious className="hidden md:flex left-4 z-50" />
+      <CarouselNext className="hidden md:flex right-4 z-50" />
     </Carousel>
   );
 };
