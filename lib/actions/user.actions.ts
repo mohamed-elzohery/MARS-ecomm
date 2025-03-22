@@ -18,10 +18,9 @@ export const signInEmail =async (prevState: unknown, formData: FormData) => {
             email: formData.get("email"),
             password: formData.get("password"),
         });
-
+        const callbackURL = formData.get("callbackUrl") as string;
         await signIn('credentials', user);
-
-        return {success: true, message: 'Signed in successfully'}
+        redirect(callbackURL);
     } catch (error) {
         if(isRedirectError(error)) throw error;
         return {success: false, message: "Invalid email or password"}

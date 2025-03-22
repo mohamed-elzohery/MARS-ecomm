@@ -8,6 +8,7 @@ import { getProductBySlug } from "@/lib/actions/products.actions";
 import { Cart } from "@/types";
 import { notFound } from "next/navigation";
 import React from "react";
+import ReviewsList from "./components.tsx/ReviewsList";
 
 const ProductDetialsPage: React.FC<{
   params: Promise<{ slug: string }>;
@@ -30,7 +31,7 @@ const ProductDetialsPage: React.FC<{
   } = product;
   const inStock = stock > 0;
   return (
-    <section className="p-6 px-0">
+    <section className="p-6 px-0 flex flex-col gap-12">
       <div className="grid grid-cols-2 md:grid-cols-5 items-start">
         <div className="col-span-2">
           <ProductImage images={images} />
@@ -87,6 +88,10 @@ const ProductDetialsPage: React.FC<{
             )}
           </CardContent>
         </Card>
+      </div>
+      <div className="flex flex-col gap-6">
+        <h2 className="h2-bold">Customer Reviews</h2>
+        <ReviewsList productId={id} productSlug={slug} reviews={[]} />
       </div>
     </section>
   );
