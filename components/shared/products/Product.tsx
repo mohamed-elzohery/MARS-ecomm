@@ -9,6 +9,7 @@ import Link from "next/link";
 import React from "react";
 import ProductPrice from "./ProductPrice";
 import { Product } from "@/types";
+import Rating from "./Rating";
 
 const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
   return (
@@ -33,7 +34,7 @@ const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
         </Link>
       </CardContent>
       <CardFooter className="flex justify-between items-center mt-auto">
-        <p className="text-xs">{data.rating.toString()} stars</p>
+        <Rating value={Number(data.rating)} />
         <p className="text-sm font-medium">
           {data.stock > 0 ? (
             <ProductPrice value={`${data.price}`} />

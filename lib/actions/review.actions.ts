@@ -1,7 +1,9 @@
+'use server';
 import { z } from "zod";
 import { insertReviewSchema } from "../validators";
 import { prisma } from "@/db/prisma";
 import { extractErrorMessage } from "../server-utils";
+import { revalidatePath } from "next/cache";
 import { auth } from "@/auth";
 
 export const createReview = async (data: z.infer<typeof insertReviewSchema>) => {
@@ -42,7 +44,7 @@ export const createReview = async (data: z.infer<typeof insertReviewSchema>) => 
                 }
             });
         })
-
+        revalidatePath(`/products/${product.slug}`);
         return {
             success: true,
             message: 'Review created successfully'
@@ -53,4 +55,27 @@ export const createReview = async (data: z.infer<typeof insertReviewSchema>) => 
             message: extractErrorMessage(error)
         }
     }
+}
+
+export const getUserReviewOnProduct = async ({productId}: {productId: string}) => {
+    try {
+        const session = await auth();
+        if(session === null) throw new Error("User not authenticated");
+        const userId = session.user.id;
+        const review = await prisma.review.findFirst({
+            where: {
+                productId,
+                userId
+            }
+        });
+        return {
+            success: true,
+            data: review
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: extractErrorMessage(error)
+        };
+    }   
 }

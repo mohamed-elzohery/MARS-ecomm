@@ -3,7 +3,7 @@
 import { prisma } from "@/db/prisma";
 import { LATEST_PRODUCTS_LIMIT, PAGE_SIZE } from "../constants";   
 import { transformToValidJSON } from "../utils";
-import { Product, ProductUpdatePayload } from "@/types";
+import {  ProductUpdatePayload } from "@/types";
 import { extractErrorMessage } from "../server-utils";
 import { revalidatePath } from "next/cache";
 import { productInsertionSchema } from "../validators";
@@ -11,7 +11,7 @@ import { z } from "zod";
 import { Prisma } from "@prisma/client";
 
 export const getLatestProducts = async () => {
-    const products:Product[] =  await prisma.product.findMany({
+    const products =  await prisma.product.findMany({
         take: Number(LATEST_PRODUCTS_LIMIT),
         orderBy: {
             createdAt: 'desc'
@@ -41,7 +41,20 @@ export const getAllCategories = async () => {
 
 export const getProductBySlug = async (slug: string) => {
     return prisma.product.findFirst({
-        where: {slug}
+        where: {slug},
+        include: {
+            reviews: {
+                include: {
+                    user: {
+                        select: {
+                            name: true,
+                            email: true
+                        }
+                    }
+                }
+            },
+        },
+        
     });
 };
 

@@ -9,6 +9,7 @@ import { Cart } from "@/types";
 import { notFound } from "next/navigation";
 import React from "react";
 import ReviewsList from "./components.tsx/ReviewsList";
+import Rating from "@/components/shared/products/Rating";
 
 const ProductDetialsPage: React.FC<{
   params: Promise<{ slug: string }>;
@@ -43,9 +44,8 @@ const ProductDetialsPage: React.FC<{
               {brand} {category}
             </p>
             <h1 className="h3-bold">{name}</h1>
-            <p>
-              {rating} of {numReviews} Reviews
-            </p>
+            <Rating value={Number(rating)} />
+            <p>{numReviews} reviews</p>
             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
               <ProductPrice
                 value={price}
@@ -91,7 +91,11 @@ const ProductDetialsPage: React.FC<{
       </div>
       <div className="flex flex-col gap-6">
         <h2 className="h2-bold">Customer Reviews</h2>
-        <ReviewsList productId={id} productSlug={slug} reviews={[]} />
+        <ReviewsList
+          productId={id}
+          productSlug={slug}
+          reviews={product.reviews}
+        />
       </div>
     </section>
   );

@@ -25,33 +25,61 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { createReview } from "@/lib/actions/review.actions";
 import { insertReviewSchema } from "@/lib/validators";
+import { Review } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { StarIcon } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { z } from "zod";
 
 type ReviewCreateFormProps = {
   userId: string;
   productId: string;
+  review: Omit<Review, "user"> | null;
 };
 
-const ReviewCreateForm: React.FC<ReviewCreateFormProps> = () => {
+type ReviewFormData = Omit<
+  z.infer<typeof insertReviewSchema>,
+  "userId" | "productId"
+>;
+
+const ReviewCreateForm: React.FC<ReviewCreateFormProps> = ({
+  productId,
+  userId,
+  review,
+}) => {
   const [open, setOpen] = useState(false);
-  const form = useForm({
+  const form = useForm<ReviewFormData>({
     defaultValues: {
-      title: "",
-      description: "",
-      rating: 0,
+      title: review?.title || "",
+      description: review?.description || "",
+      rating: review?.rating || 0,
     },
-    resolver: zodResolver(insertReviewSchema),
+    resolver: zodResolver(
+      insertReviewSchema.omit({ userId: true, productId: true })
+    ),
   });
 
   const openDialog = () => {
     setOpen(true);
   };
 
-  const onSubmit = () => {};
+  const closeDialog = () => {
+    setOpen(false);
+  };
+  const onSubmit = async (values: ReviewFormData) => {
+    const res = await createReview({
+      ...values,
+      userId,
+      productId,
+    });
+    if (res.success) toast.success(res.message);
+    else toast.error(res.message);
+    closeDialog();
+  };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <Button onClick={openDialog} variant="default" className="self-start">
