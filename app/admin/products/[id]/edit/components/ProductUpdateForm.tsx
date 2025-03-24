@@ -27,7 +27,9 @@ import { UploadDropzone } from "@/lib/uploadthing";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Product } from "@/types";
 
-const ProductUpdateForm: React.FC<{ product: Product }> = ({ product }) => {
+const ProductUpdateForm: React.FC<{ product: Omit<Product, "reviews"> }> = ({
+  product,
+}) => {
   const router = useRouter();
   const form = useForm<z.infer<typeof productInsertionSchema>>({
     resolver: zodResolver(productInsertionSchema),

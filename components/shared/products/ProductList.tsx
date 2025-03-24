@@ -4,7 +4,7 @@ import { Product } from "@/types";
 
 type ProductsListProps = {
   title: string;
-  products: Product[];
+  products: Omit<Product, "reviews">[];
   limit?: number;
 };
 

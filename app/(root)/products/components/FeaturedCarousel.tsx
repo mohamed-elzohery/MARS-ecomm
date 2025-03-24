@@ -12,7 +12,7 @@ import Image from "next/image";
 import { Product } from "@/types";
 import Link from "next/link";
 
-const FeaturedCarousel: React.FC<{ products: Product[] }> = ({
+const FeaturedCarousel: React.FC<{ products: Omit<Product, "reviews">[] }> = ({
   products: featuredProducts,
 }) => {
   return (

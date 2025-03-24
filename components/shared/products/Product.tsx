@@ -11,7 +11,9 @@ import ProductPrice from "./ProductPrice";
 import { Product } from "@/types";
 import Rating from "./Rating";
 
-const ProductCard: React.FC<{ data: Product }> = ({ data }) => {
+const ProductCard: React.FC<{ data: Omit<Product, "reviews"> }> = ({
+  data,
+}) => {
   return (
     <Card className="flex flex-col">
       <CardHeader>
