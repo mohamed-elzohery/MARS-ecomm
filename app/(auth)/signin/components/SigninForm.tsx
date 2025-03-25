@@ -11,6 +11,7 @@ import { useFormStatus } from "react-dom";
 const SigninForm = () => {
   const searchParams = useSearchParams();
   const callbackURL = searchParams.get("callbackUrl") || "/";
+  console.log("form ", callbackURL);
   const [data, action] = useActionState(signInEmail, {
     success: false,
     message: "",

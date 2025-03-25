@@ -40,7 +40,7 @@ export const getAllCategories = async () => {
 }
 
 export const getProductBySlug = async (slug: string) => {
-    return prisma.product.findFirst({
+    return await prisma.product.findFirst({
         where: {slug},
         include: {
             reviews: {
