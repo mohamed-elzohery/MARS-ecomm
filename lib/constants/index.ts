@@ -1,6 +1,6 @@
 export const APP_NAME = process.env.APP_NAME || "MARS STORE";
 export const APP_DESCRIPTION = process.env.APP_DESCRIPTION || "MARS CLOTHING BRAND";
-export const SERVER_URL = `https://${process.env.VERCEL_URL || "mars-ecomm-qmots0sfr-mohamedelzoherys-projects.vercel.app"}`;
+export const SERVER_URL = process.env.VERCEL_URL ?  `https://${process.env.VERCEL_URL}`: "https://mars-ecomm.vercel.app";
 export const LATEST_PRODUCTS_LIMIT = process.env.LATEST_PRODUCTS_LIMIT || 4;
 export const PAYMENT_METHODS = process.env.PAYMENT_METHODS ? process.env.PAYMENT_METHODS.split(", ") : ["Stripe", "PayPal", "CashOnDelivery"];
 export const DEFAULT_PAYMENT_METHOD = process.env.DEFAULT_PAYMENT_METHOD ? process.env.DEFAULT_PAYMENT_METHOD: "PayPal";
