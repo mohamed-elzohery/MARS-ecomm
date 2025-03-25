@@ -11,6 +11,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
+import { SERVER_URL } from "@/lib/constants";
 import { round2 } from "@/lib/utils";
 
 // Initialize Stripe outside component to avoid re-initialization
@@ -44,7 +45,7 @@ const CheckoutForm = ({
       .confirmPayment({
         elements,
         confirmParams: {
-          return_url: `/order/${orderId}/stripe-payment-success`,
+          return_url: `${SERVER_URL}/order/${orderId}/stripe-payment-success`,
         },
       })
       .then(({ error }) => {
