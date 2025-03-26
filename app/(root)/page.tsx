@@ -10,9 +10,15 @@ import FeaturedCarousel from "./products/components/FeaturedCarousel";
 const HomePage = async () => {
   const products = await getLatestProducts();
   const { data: featuredProducts } = await getFeaturedProducts();
+  const filteredProducts = featuredProducts?.filter(
+    (product) => product.banner
+  );
+
   return (
     <div className="flex flex-col gap-4">
-      {featuredProducts && <FeaturedCarousel products={featuredProducts} />}
+      {filteredProducts && filteredProducts.length > 0 && (
+        <FeaturedCarousel products={filteredProducts} />
+      )}
       <ProductsList
         key={"products-list"}
         title="New Arrivals"
