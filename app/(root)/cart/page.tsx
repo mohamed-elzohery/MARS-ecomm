@@ -2,6 +2,7 @@ import { getCartItems } from "@/lib/actions/cart.actions";
 import { Metadata } from "next";
 import React from "react";
 import CartTable from "./components/CartTable";
+import { transformToValidJSON } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Cart",
@@ -12,7 +13,7 @@ const page = async () => {
   const cart = await getCartItems();
   return (
     <div>
-      <CartTable cart={cart} />
+      <CartTable cart={transformToValidJSON(cart)} />
     </div>
   );
 };

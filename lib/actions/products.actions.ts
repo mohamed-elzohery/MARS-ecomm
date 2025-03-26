@@ -40,7 +40,7 @@ export const getAllCategories = async () => {
 }
 
 export const getProductBySlug = async (slug: string) => {
-    return await prisma.product.findFirst({
+    const product =  await prisma.product.findFirst({
         where: {slug},
         include: {
             reviews: {
@@ -56,6 +56,7 @@ export const getProductBySlug = async (slug: string) => {
         },
         
     });
+    return transformToValidJSON(product);
 };
 
 export const getFeaturedProducts = async () => {
