@@ -3,7 +3,6 @@
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { paymentMethodSchema, shippingAddressSchema, signInEmailSchema, signUpEmailSchema } from "../validators";
 import { auth, signIn, signOut } from "@/auth";
-import { hashSync } from "bcrypt-ts-edge";
 import { prisma } from "@/db/prisma";
 import { PaymentMethod, ShippingAddress, UpdateAdminData, UpdateUserData } from "@/types";
 import { redirect } from "next/navigation";
@@ -11,6 +10,7 @@ import { extractErrorMessage } from "../server-utils";
 import { PAGE_SIZE } from "../constants";
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
+import { hash } from "../encrypt";
 
 export const signInEmail =async (prevState: unknown, formData: FormData) => {
     try {
@@ -40,7 +40,7 @@ export const signUpEmail = async (prevState: unknown, formData: FormData) => {
             confirmPassword: formData.get("confirmPassword"),
         });
         const plainPassword = user.password;
-        user.password = hashSync(plainPassword, 10);
+        user.password = await hash(plainPassword);
         await prisma.user.create({data: {name: user.name, password: user.password, email: user.email}});
         await signIn('credentials', 
           {

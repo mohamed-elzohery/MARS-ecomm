@@ -5,4 +5,5 @@ export const LATEST_PRODUCTS_LIMIT = process.env.LATEST_PRODUCTS_LIMIT || 4;
 export const PAYMENT_METHODS = process.env.PAYMENT_METHODS ? process.env.PAYMENT_METHODS.split(", ") : ["Stripe", "PayPal", "CashOnDelivery"];
 export const DEFAULT_PAYMENT_METHOD = process.env.DEFAULT_PAYMENT_METHOD ? process.env.DEFAULT_PAYMENT_METHOD: "PayPal";
 export const PAGE_SIZE = process.env.PAGE_SIZE || 10;
+export const SENDER_EMAIL = process.env.RESEND_SENDER_EMAIL || "onboarding@resend.dev";
 export const USER_ROLES = process.env.USER_ROLES?.split(",") || ["user", "admin"];

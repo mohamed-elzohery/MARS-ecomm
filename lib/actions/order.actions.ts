@@ -13,6 +13,7 @@ import { revalidatePath } from "next/cache";
 import { PAGE_SIZE } from "../constants";
 import { requireAdmin } from "../auth-guard";
 import { Prisma } from "@prisma/client";
+import { sendPurchaseEmail } from "@/email/sendPurchaseEmail";
 
 
 export const placeOrder = async () => {
@@ -70,6 +71,7 @@ export const placeOrder = async () => {
         } );
 
         if(!insertedOrder) throw new Error("Order not created");
+
         return {
             success: true,
             message: "Order created successfully",
@@ -242,6 +244,7 @@ export async function updateOrderToPaid({
   });
 
   if (!updatedOrder) throw new Error('Order not found');
+  await sendPurchaseEmail(updatedOrder);
 
   return updatedOrder
 }
