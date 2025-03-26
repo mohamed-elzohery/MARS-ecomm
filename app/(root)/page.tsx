@@ -6,6 +6,8 @@ import {
 import React from "react";
 import ShowAllProductsButton from "@/components/shared/products/ShowAllProductsButton";
 import FeaturedCarousel from "./products/components/FeaturedCarousel";
+import IconBoxes from "@/components/shared/IconBoxes/IconBoxes";
+import DealCountdown from "@/components/shared/count-down/CountDown";
 
 const HomePage = async () => {
   const products = await getLatestProducts();
@@ -28,6 +30,8 @@ const HomePage = async () => {
       <div className="flex justify-center">
         <ShowAllProductsButton />
       </div>
+      <DealCountdown />
+      <IconBoxes />
     </div>
   );
 };
