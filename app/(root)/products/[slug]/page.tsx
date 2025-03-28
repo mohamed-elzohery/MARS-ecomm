@@ -4,12 +4,24 @@ import ProductPrice from "@/components/shared/products/ProductPrice";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { getCartItems } from "@/lib/actions/cart.actions";
-import { getProductBySlug } from "@/lib/actions/products.actions";
+import {
+  getAllProductsIDs,
+  getProductBySlug,
+} from "@/lib/actions/products.actions";
 import { Cart } from "@/types";
 import { notFound } from "next/navigation";
 import React from "react";
 import ReviewsList from "./components.tsx/ReviewsList";
 import Rating from "@/components/shared/products/Rating";
+
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const products = await getAllProductsIDs();
+  return products.map((post) => ({
+    slug: post.slug,
+  }));
+}
 
 const ProductDetialsPage: React.FC<{
   params: Promise<{ slug: string }>;

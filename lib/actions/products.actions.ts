@@ -146,6 +146,16 @@ export const getProducts = async ({limit = Number(PAGE_SIZE), page = 1, query, c
             message: extractErrorMessage(error)
         }
     }
+};
+
+export const getAllProductsIDs = async () => {
+    const products = await prisma.product.findMany({
+        select: {
+            slug: true
+        }
+    });
+
+    return products;
 }
 
 export const deleteProductByID = async (id: string) => { 
